@@ -4,9 +4,9 @@
   remote_user: root
   tasks:
   - name: ensure apache is at the latest version
-    yum:
+    package:
       name: httpd
-      state: latest
+      state: present
   - name: write the apache config file
     template:
       src: /srv/httpd.j2
