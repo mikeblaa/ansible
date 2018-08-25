@@ -3,8 +3,11 @@
   vars:
   remote_user: root
   tasks:
-  - name: install GnuCash 
+  - name: install packages
     package:
       name: gnucash
+      state: present
+    package:
+      name: vim
       state: present
 
