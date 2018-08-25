@@ -3,17 +3,18 @@
   vars:
   remote_user: root
   tasks:
-  - name: install packages
-    package:
-      name: gnucash
-      state: present
-    package:
-      name: vim
-      state: present
   - name: install multiple packages
     action: >
-      {{ ansible_pkg_mgr }} name={{ item }} state=present update_cache=yes
+      {{ ansible_pkg_mgr }} name={{ item }} state=present
     with_items:
       - brasero
       - easytag
+      - freeipa-client
+      - gnucash
+      - google-chrome-stable
+      - gparted
+      - jnettop
+      - keepass
+      - simple-scan
+      - vim
 
