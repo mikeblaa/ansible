@@ -10,4 +10,10 @@
     package:
       name: vim
       state: present
+  - name: install multiple packages
+    action: >
+      {{ ansible_pkg_mgr }} name={{ item }} state=present update_cache=yes
+    with_items:
+      - brasero
+      - easytag
 
