@@ -21,25 +21,29 @@
       - gnucash
       - google-chrome-stable
       - gparted
+      - ipa-client
       - jnettop
       - keepass
       - libsss_autofs
       - nfs-utils
+      - python2-libselinux
+      - python2-libsemanage
       - simple-scan
       - vim
-  -name: set SElinux use_nfs_home_dirs
-   seboolean:
-     name: use_nfs_home_dirs
-     state: yes
-     persistent: yes
-  -name: enabled NetworkManager-wait-online.service
-   systemd:
-     name: NetworkManager-wait-online.service
-     enabled: yes
-     started: yes
-  -name: enable autofs
-   systemd:
-     name: autofs
-     enabled: yes
-     started: yes
+  - name: set SElinux use_nfs_home_dirs
+    seboolean:
+      name: use_nfs_home_dirs
+      state: yes
+      persistent: yes
+  - name: enabled NetworkManager-wait-online.service
+    systemd:
+      name: NetworkManager-wait-online.service
+      enabled: yes
+  - name: enable autofs
+    systemd:
+      name: autofs
+      enabled: yes
+      state: started
+  - name: setup FreeIPA
+    command: /usr/sbin/ipa-client-install --domain=maballou.com --server=ipa.maballou.com --realm=MABALLOU.COM --fixed-primary --principal admin -W --force-join --force-ntpd --unattended --request-cert
 
