@@ -14,6 +14,7 @@
     action: >
       {{ ansible_pkg_mgr }} name={{ item }} state=present
     with_items:
+      - autofs
       - brasero
       - easytag
       - freeipa-client
@@ -22,6 +23,23 @@
       - gparted
       - jnettop
       - keepass
+      - libsss_autofs
+      - nfs-utils
       - simple-scan
       - vim
+  -name: set SElinux use_nfs_home_dirs
+   seboolean:
+     name: use_nfs_home_dirs
+     state: yes
+     persistent: yes
+  -name: enabled NetworkManager-wait-online.service
+   systemd:
+     name: NetworkManager-wait-online.service
+     enabled: yes
+     started: yes
+  -name: enable autofs
+   systemd:
+     name: autofs
+     enabled: yes
+     started: yes
 
