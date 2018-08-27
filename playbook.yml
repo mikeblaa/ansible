@@ -1,7 +1,12 @@
 ---
-- hosts: localhost 
-  vars:
+- hosts: default
   remote_user: root
+
+  vars:
+  vars_prompt:
+    - name: "ipa_password"
+      prompt: "Enter IPA password: "
+
   tasks:
   - name: Add repository
     yum_repository:
@@ -16,6 +21,7 @@
     with_items:
       - autofs
       - brasero
+      - cifs-utils
       - easytag
       - freeipa-client
       - gnucash
@@ -35,15 +41,16 @@
       name: use_nfs_home_dirs
       state: yes
       persistent: yes
-  - name: enabled NetworkManager-wait-online.service
-    systemd:
-      name: NetworkManager-wait-online.service
-      enabled: yes
+#  - name: enabled NetworkManager-wait-online.service
+#    systemd:
+#      name: NetworkManager-wait-online.service
+#      enabled: yes
   - name: enable autofs
     systemd:
       name: autofs
       enabled: yes
       state: started
   - name: setup FreeIPA
-    command: /usr/sbin/ipa-client-install --domain=maballou.com --server=ipa.maballou.com --realm=MABALLOU.COM --fixed-primary --principal admin -W --force-join --force-ntpd --unattended --request-cert
-
+    command: /usr/sbin/ipa-client-install --domain=maballou.com --server=ipa.maballou.com --realm=MABALLOU.COM --fixed-primary --principal admin --password {{ ipa_password }} --force-join --unattended --request-cert
+  - name: setup FreeIPA automount
+    command: /usr/sbin/ipa-client-automount -U
