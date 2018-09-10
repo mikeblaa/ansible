@@ -1,6 +1,7 @@
 ---
-- hosts: default
-  remote_user: root
+- hosts: maximus.maballou.com
+  connection: local
+  become: yes
 
   vars:
   vars_prompt:
@@ -8,13 +9,10 @@
       prompt: "Enter IPA password: "
 
   tasks:
-  - name: Add repository
-    yum_repository:
-      name: google-chrome
-      description: google-chrome
-      baseurl: http://dl.google.com/linux/chrome/rpm/stable/x86_64
-      gpgcheck: yes
-      gpgkey: https://dl.google.com/linux/linux_signing_key.pub
+  - name: enable third-party repositories
+    command: dnf install fedora-workstation-repositories
+  - name: enable google-chrome repository
+    command: dnf config-manager --set-enabled google-chrome
   - name: install multiple packages
     action: >
       {{ ansible_pkg_mgr }} name={{ item }} state=present
@@ -41,16 +39,16 @@
       name: use_nfs_home_dirs
       state: yes
       persistent: yes
-#  - name: enabled NetworkManager-wait-online.service
-#    systemd:
-#      name: NetworkManager-wait-online.service
-#      enabled: yes
+  - name: enabled NetworkManager-wait-online.service
+    systemd:
+      name: NetworkManager-wait-online.service
+      enabled: yes
   - name: enable autofs
     systemd:
       name: autofs
       enabled: yes
       state: started
-  - name: setup FreeIPA
-    command: /usr/sbin/ipa-client-install --domain=maballou.com --server=ipa.maballou.com --realm=MABALLOU.COM --fixed-primary --principal admin --password {{ ipa_password }} --force-join --unattended --request-cert
-  - name: setup FreeIPA automount
-    command: /usr/sbin/ipa-client-automount -U
+#  - name: setup FreeIPA
+#    command: /usr/sbin/ipa-client-install --domain=maballou.com --server=ipa.maballou.com --realm=MABALLOU.COM --fixed-primary --principal admin --password {{ ipa_password }} --force-join --unattended --request-cert
+#  - name: setup FreeIPA automount
+#    command: /usr/sbin/ipa-client-automount -U
