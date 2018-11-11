@@ -11,14 +11,14 @@
   tasks:
   - name: set hostname
     hostname:
-      name: maximux.maballou.com
-  - name: configure networking
-    nmcli:
-      dns4: 192.168.0.1 192.168.0.2
-      dns6: fe80::a4be:aa5f:694d:2c48 fe80::20c:29ff:fee7:7379
-      gw4: 192.168.0.254
-      ip4: 192.168.0.99/24
-      state: present
+      name: maximus.maballou.com
+#  - name: configure networking
+#    nmcli:
+#      dns4: 192.168.0.1 192.168.0.2
+#      dns6: fe80::a4be:aa5f:694d:2c48 fe80::20c:29ff:fee7:7379
+#      gw4: 192.168.0.254
+#      ip4: 192.168.0.99/24
+#      state: present
   - name: enable third-party repositories
     dnf:
       name: fedora-workstation-repositories
@@ -29,6 +29,11 @@
     dnf:
       name: autofs, brasero, cifs-utils, easytag, freeipa-client, gnucash, google-chrome-stable, gparted, ipa-client, jnettop, keepass, libsss_autofs, nfs-utils, python2-libselinux, python2-libsemanage, python3-libsemanage, simple-scan, vim
       state: latest
+  - name: set SElinux cups_execmem 
+    seboolean:
+      name: cups_execmem
+      state: yes
+      persistent: yes
   - name: set SElinux use_nfs_home_dirs
     seboolean:
       name: use_nfs_home_dirs
@@ -45,7 +50,5 @@
       state: started
   - name: setup FreeIPA
     command: /usr/sbin/ipa-client-install --domain=maballou.com --server=ipa.maballou.com --realm=MABALLOU.COM --fixed-primary --principal admin --password {{ ipa_password }} --force-join --unattended --request-cert
-    register: out
-  - debug: var=out.stdout_lines
   - name: setup FreeIPA automount
     command: /usr/sbin/ipa-client-automount -U
