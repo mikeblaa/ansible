@@ -1,9 +1,10 @@
 [Unit]
 Description=Automount Home Mike
+Requires=network-online.target
+After=network-online.service
 
 [Automount]
 Where=/home/mike
 
 [Install]
 WantedBy=multi-user.target
-

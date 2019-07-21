@@ -7,6 +7,10 @@
   vars_prompt:
     - name: "ipa_password"
       prompt: "Enter IPA password: "
+    - name: "cifs_username"
+      prompt: "Enter CIFS username: "
+    - name: "cifs_password"
+      prompt: "Enter CIFS password: "
 
   tasks:
   - name: set hostname
@@ -64,6 +68,16 @@
       enabled: yes
       state: started
 
+  - name: systemd automount files
+    template: 
+      src: "{{ item }}" 
+      dest: /etc/systemd/system/{{ item | basename | regex_replace('\.j2','') }}
+      owner: root
+      group: root
+      mode: '0660'
+    with_fileglob:
+      - templates/*.j2
+
   - name: setup freeipa
     command: /usr/sbin/ipa-client-install --domain=maballou.com --server=ipa.maballou.com 
       --realm=maballou.com --fixed-primary --principal admin --password {{ ipa_password }} 
@@ -71,4 +85,3 @@
 
   - name: setup freeipa automount
     command: /usr/sbin/ipa-client-automount -u
-

@@ -1,5 +1,7 @@
 [Unit]
 Description=Mike
+Requires=network-online.target
+After=network-online.service
 
 [Mount]
 What=//files/mike

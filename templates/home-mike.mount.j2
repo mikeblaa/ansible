@@ -1,5 +1,7 @@
 [Unit]
 Description=Home Mike
+Requires=network-online.target
+After=network-online.service
 
 [Mount]
 What=files.maballou.com:/srv/home/mike
@@ -8,4 +10,3 @@ Type=nfs
 
 [Install]
 WantedBy=multi-user.target
-

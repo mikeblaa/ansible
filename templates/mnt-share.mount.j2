@@ -1,5 +1,7 @@
 [Unit]
 Description=Share
+Requires=network-online.target
+After=network-online.service
 
 [Mount]
 What=//files/share
@@ -9,4 +11,3 @@ Options=vers=3.0,rsize=130048,wsize=130048,username={{ cifs_username }},password
 
 [Install]
 WantedBy=multi-user.target
-
