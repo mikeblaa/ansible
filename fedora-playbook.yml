@@ -19,12 +19,20 @@
 #      gw4: 192.168.0.254
 #      ip4: 192.168.0.99/24
 #      state: present
+
   - name: enable third-party repositories
     dnf:
       name: fedora-workstation-repositories
       state: latest
+
   - name: enable google-chrome repository
     command: dnf config-manager --set-enabled google-chrome
+
+  - name: update packages
+    dnf:
+      name: '*'
+      state: latest
+
   - name: install multiple packages
     dnf:
       name: autofs, brasero, cifs-utils, easytag, freeipa-client, gnucash, 
@@ -32,26 +40,35 @@
         libsss_autofs, nfs-utils, python2-libselinux, python2-libsemanage, 
         python3-libsemanage, simple-scan, vim
       state: latest
+
   - name: set selinux cups_execmem 
     seboolean:
       name: cups_execmem
       state: yes
       persistent: yes
+
   - name: set selinux use_nfs_home_dirs
     seboolean:
       name: use_nfs_home_dirs
       state: yes
       persistent: yes
+
   - name: enabled networkmanager-wait-online.service
     systemd:
-      name: networkmanager-wait-online.service
+      name: NetworkManager-wait-online.service 
       enabled: yes
+
   - name: enable autofs
     systemd:
       name: autofs
       enabled: yes
       state: started
+
   - name: setup freeipa
-    command: /usr/sbin/ipa-client-install --domain=maballou.com --server=ipa.maballou.com --realm=maballou.com --fixed-primary --principal admin --password {{ ipa_password }} --force-join --unattended --request-cert
+    command: /usr/sbin/ipa-client-install --domain=maballou.com --server=ipa.maballou.com 
+      --realm=maballou.com --fixed-primary --principal admin --password {{ ipa_password }} 
+      --force-join --unattended --request-cert
+
   - name: setup freeipa automount
     command: /usr/sbin/ipa-client-automount -u
+

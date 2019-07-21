@@ -1,0 +1,12 @@
+[Unit]
+Description=Share
+
+[Mount]
+What=//files/share
+Where=/mnt/share
+Type=cifs
+Options=vers=3.0,rsize=130048,wsize=130048,username={{ cifs_username }},password={{ cifs_password }},uid=mike,gid=users
+
+[Install]
+WantedBy=multi-user.target
+
