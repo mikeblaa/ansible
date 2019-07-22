@@ -17,6 +17,8 @@
 
 - name: enable google-chrome repository
   command: dnf config-manager --set-enabled google-chrome
+  args:
+    warn: false
 
 - name: update packages
   dnf:
@@ -25,10 +27,25 @@
 
 - name: install multiple packages
   dnf:
-    name: autofs, brasero, cifs-utils, easytag, freeipa-client, gnucash, 
-      google-chrome-stable, gparted, ipa-client, jnettop, keepass, 
-      libsss_autofs, nfs-utils, python2-libselinux, python2-libsemanage, 
-      python3-libsemanage, simple-scan, vim
+    name:
+      - autofs
+      - brasero
+      - cifs-utils
+      - easytag
+      - freeipa-client
+      - gnucash
+      - google-chrome-stable
+      - gparted
+      - ipa-client
+      - jnettop
+      - keepass
+      - libsss_autofs
+      - nfs-utils
+      - python2-libselinux
+      - python2-libsemanage
+      - python3-libsemanage
+      - simple-scan
+      - vim
     state: latest
 
 - name: set selinux cups_execmem 
