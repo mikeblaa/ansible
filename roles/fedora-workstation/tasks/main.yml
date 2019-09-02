@@ -65,6 +65,12 @@
     name: NetworkManager-wait-online.service 
     enabled: yes
 
+- name: start SSSD after network-online
+  lineinfile:
+    path: /lib/systemd/system/sssd.service
+    line: 'After=network-online.target'
+    insertbefore: Before=.*
+
 - name: enable autofs
   systemd:
     name: autofs
