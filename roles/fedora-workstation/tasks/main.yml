@@ -1,4 +1,6 @@
 ---
+- include_vars: main.yml
+
 - name: set hostname
   hostname:
     name: maximus.maballou.com
@@ -41,8 +43,6 @@
       - keepass
       - libsss_autofs
       - nfs-utils
-      - python2-libselinux
-      - python2-libsemanage
       - python3-libsemanage
       - simple-scan
       - vim

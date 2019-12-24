@@ -4,14 +4,6 @@
   hosts: localhost
   connection: local
   become: yes
-  vars:
-  vars_prompt:
-    - name: "ipa_password"
-      prompt: "Enter IPA password: "
-    - name: "cifs_username"
-      prompt: "Enter CIFS username: "
-    - name: "cifs_password"
-      prompt: "Enter CIFS password: "
   roles:
     - common
     - fedora-workstation
