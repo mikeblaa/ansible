@@ -1,7 +1,7 @@
 [Unit]
 Description=Share
-Requires=network-online.target
-After=network-online.service
+Requires=NetworkManager-wait-online.service
+After=NetworkManager-wait-online.service
 
 [Mount]
 What=//files/share

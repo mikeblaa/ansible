@@ -3,7 +3,7 @@
 
 - name: set hostname
   hostname:
-    name: maximus.maballou.com
+    name: prime.maballou.com
 #  - name: configure networking
 #    nmcli:
 #      dns4: 192.168.0.1 192.168.0.2
@@ -30,18 +30,14 @@
 - name: install multiple packages
   dnf:
     name:
-      - autofs
       - brasero
       - cifs-utils
       - easytag
-      - freeipa-client
       - gnucash
       - google-chrome-stable
       - gparted
-      - ipa-client
       - jnettop
       - keepass
-      - libsss_autofs
       - nfs-utils
       - python3-libsemanage
       - simple-scan
@@ -77,12 +73,6 @@
     line: 'After=network-online.target'
     insertbefore: Before=.*
 
-- name: enable autofs
-  systemd:
-    name: autofs
-    enabled: yes
-    state: started
-
 - name: systemd automount files
   template: 
     src: "{{ item }}" 
@@ -93,10 +83,14 @@
   with_fileglob:
       - templates/*.j2
 
-- name: setup freeipa
-  command: /usr/sbin/ipa-client-install --domain=maballou.com --server=ipa.maballou.com 
-    --realm=MABALLOU.COM --fixed-primary --principal admin --password {{ ipa_password }} 
-    --force-join --unattended --request-cert
+- name: start mnt-mike automount
+  systemd:
+    name: mnt-mike.mount
+    enabled: yes
+    state: started
 
-- name: setup freeipa automount
-  command: /usr/sbin/ipa-client-automount --unattended
+- name: start mnt-share automount
+  systemd:
+    name: mnt-share.mount
+    enabled: yes
+    state: started
