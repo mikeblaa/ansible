@@ -1,0 +1,7 @@
+---
+- name: configure names servers
+  hosts: nameservers
+  become: yes
+  roles:
+    - common
+    - nameserver

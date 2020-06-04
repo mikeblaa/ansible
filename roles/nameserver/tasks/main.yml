@@ -1,0 +1,52 @@
+---
+- name: update packages
+  dnf:
+    name: '*'
+    state: latest
+
+# Install bind 
+- name: install bind
+  dnf:
+    name:
+      - bind
+
+# Install maballou.com domain files
+- name: copy maballou.com zone files
+  template: 
+    src: "{{ item }}" 
+    dest: /var/named/{{ item | basename | regex_replace('\.j2','') }}
+    owner: root
+    group: named
+    seuser: system_u
+    serole: object_r
+    setype: named_zone_t
+    mode: '0640'
+  with_fileglob:
+      - templates/maballou.com*.j2
+
+# Update some etc files
+- name: copy named.conf
+  template: 
+    src: templates/named.conf.j2
+    dest: /etc/named.conf
+    owner: root
+    group: named
+    seuser: system_u
+    serole: object_r
+    setype: named_conf_t
+    mode: '0640'
+
+# update firewall
+- name: update firewalld
+  firewalld:
+    service: dns
+    permanent: yes
+    state: enabled
+    immediate: yes
+
+# restart bind
+- name: restart named
+  systemd:
+    name: named
+    enabled: yes
+    state: restarted

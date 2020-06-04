@@ -1,0 +1,47 @@
+$ORIGIN maballou.com.
+$TTL 3D
+@               IN      SOA     names-1.maballou.com. root.maballou.com. (
+                                1       ; Serial
+                                8H      ; Refresh
+                                2H      ; Retry
+                                4W      ; Expire
+                                1D)     ; Minimum TTL
+
+                IN      NS      names-1.maballou.com.
+                IN      NS      names-2.maballou.com.
+
+maballou.com.   IN      MX 10   mail.maballou.com.
+
+names-1         IN      A       192.168.0.1
+names-2         IN      A       192.168.0.2
+brother-2070n   IN      A       192.168.0.3
+brother-3170cdw IN      A       192.168.0.4
+esxi-1          IN      A       192.168.0.5
+esxi-2          IN      A       192.168.0.6
+files-1         IN      A       192.168.0.10
+backups         IN      A       192.168.0.11
+dev             IN      A       192.168.0.15
+services        IN      A       192.168.0.22
+ipa             IN      A       192.168.0.23
+                IN      AAAA    fe80::20c:29ff:fe86:be6e
+files-2         IN      A       192.168.0.25
+web-2           IN      A       192.168.0.26
+mail-2          IN      A       192.168.0.27
+ops-2           IN      A       192.168.0.28
+fedora          IN      A       192.168.0.29
+maximus         IN      A       192.168.0.99
+bridge-1        IN      A       192.168.0.251
+bridge-2        IN      A       192.168.0.252
+raspberrypi     IN      A       192.168.0.253
+gateway         IN      A       192.168.0.254
+esxi            IN      CNAME   esxi-1.maballou.com.
+files           IN      CNAME   files-2.maballou.com.
+mail            IN      CNAME   mail-2.maballou.com.
+ops             IN      CNAME   ops-2.maballou.com.
+web             IN      CNAME   web-2.maballou.com.
+jira            IN      CNAME   web-2.maballou.com.
+confluence      IN      CNAME   web-2.maballou.com.
+print           IN      CNAME   services.maballou.com.
+time            IN      CNAME   ipa.maballou.com.
+media           IN      CNAME   services.maballou.com.
+ca              IN      CNAME   services.maballou.com.
