@@ -79,9 +79,9 @@
     dest: /etc/systemd/system/{{ item | basename | regex_replace('\.j2','') }}
     owner: root
     group: root
-    mode: '0660'
+    mode: '0644'
   with_fileglob:
-      - templates/*.j2
+      - templates/mnt-*.j2
 
 - name: start mnt-mike automount
   systemd:
@@ -94,3 +94,4 @@
     name: mnt-share.mount
     enabled: yes
     state: started
+...
