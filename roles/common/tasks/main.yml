@@ -13,4 +13,31 @@
     group: mike
     groups: users,wheel
     password: $6$IzOCD.iKvcFk4OHg$Cs7Sctf2AyLhgOtMLE1618iP0eOyQaoyC2NlSmm3ytlLRtsA82PkWCN0sxYT66Lhw53t0BkQSD9ksK0en4hSF/
+
+- name: install nfs-utils
+  dnf:
+    name:
+      - nfs-utils
+
+- name: systemd automount files
+  template: 
+    src: "{{ item }}" 
+    dest: /etc/systemd/system/{{ item | basename | regex_replace('\.j2','') }}
+    owner: root
+    group: root
+    mode: '0644'
+  with_fileglob:
+      - templates/*.j2
+
+- name: enabled networkmanager-wait-online.service
+  systemd:
+    name: NetworkManager-wait-online.service 
+    enabled: yes
+    state: started
+
+- name: start home-mike automount
+  systemd:
+    name: home-mike.mount
+    enabled: yes
+    state: started
 ...
