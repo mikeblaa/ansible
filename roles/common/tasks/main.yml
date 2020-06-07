@@ -1,0 +1,16 @@
+---
+# Create local users until an LDAP is set up
+- name: add group mike
+  group:
+    name: mike
+    gid: 10000
+
+- name: add user mike
+  user:
+    name: mike
+    comment: Mike
+    uid: 10000
+    group: mike
+    groups: users,wheel
+    password: $6$IzOCD.iKvcFk4OHg$Cs7Sctf2AyLhgOtMLE1618iP0eOyQaoyC2NlSmm3ytlLRtsA82PkWCN0sxYT66Lhw53t0BkQSD9ksK0en4hSF/
+...

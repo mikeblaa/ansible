@@ -1,4 +1,6 @@
 ---
+- include_vars: main.yml
+
 # Update all packages
 - name: update packages
   dnf:
@@ -60,6 +62,39 @@
     fstype: xfs
     dev: /dev/mapper/data-cifs--share
 
+# Create mountpoints and set ownership
+- name: create nfs-home
+  file:
+    path: /srv/nfs-home
+    state: directory
+    mode: u=rwx,g=rx,o=rx
+    owner: root
+    group: root
+    seuser: system_u
+    serole: object_r
+
+- name: create cifs-home
+  file:
+    path: /srv/cifs-home
+    state: directory
+    mode: u=rwx,g=rx,o=rx
+    owner: root
+    group: root
+    seuser: system_u
+    serole: object_r
+    setype: samba_share_t
+
+- name: create cifs-share
+  file:
+    path: /srv/cifs-share
+    state: directory
+    mode: u=rwx,g=rwx,o=rx
+    owner: root
+    group: users
+    seuser: system_u
+    serole: object_r
+    setype: samba_share_t
+
 # Mount LVM volumes
 - name: mount nfs-home
   mount:
@@ -109,6 +144,10 @@
     setype: samba_etc_t
     mode: '0644'
 
+# Add user to samba, echo twice to confirm password
+- name: Add user to samba
+  shell: "(echo {{ cifs_password }}; echo {{ cifs_password }}) | smbpasswd -s -a {{ cifs_username }}"
+
 # update firewall
 - name: update firewalld to add nfs
   firewalld:
@@ -136,3 +175,4 @@
     name: smb
     enabled: yes
     state: restarted
+...
