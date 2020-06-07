@@ -1,0 +1,138 @@
+---
+# Update all packages
+- name: update packages
+  dnf:
+    name: '*'
+    state: latest
+
+# Install NFS and CIFS packages
+- name: install nfs-utils, cifs, and samba
+  dnf:
+    name:
+      - nfs-utils
+      - cifs-utils
+      - samba
+
+# Gather facts on disk configuration
+# TODO
+
+# Create LVM volume groups
+- name: create LVM volume groups
+  lvg:
+    vg: data
+    pvs: /dev/sdb,/dev/sdc
+
+# Create LVM logical volumes
+- name: create nfs-home logical volume
+  lvol:
+    lv: nfs-home
+    vg: data
+    size: 128G
+    opts: --type raid0
+
+- name: create cifs-home logical volume
+  lvol:
+    lv: cifs-home
+    vg: data
+    size: 256G
+    opts: --type raid0
+
+- name: create cifs-share logical volume
+  lvol:
+    lv: cifs-share
+    vg: data
+    size: 512G
+    opts: --type raid0
+
+# Create filesystems
+- name: create filesystem on nfs-home
+  filesystem:
+    fstype: xfs
+    dev: /dev/mapper/data-nfs--home
+
+- name: create filesystem on cifs-home
+  filesystem:
+    fstype: xfs
+    dev: /dev/mapper/data-cifs--home
+
+- name: create filesystem on cifs-share
+  filesystem:
+    fstype: xfs
+    dev: /dev/mapper/data-cifs--share
+
+# Mount LVM volumes
+- name: mount nfs-home
+  mount:
+    path: /srv/nfs-home
+    src: /dev/mapper/data-nfs--home
+    fstype: xfs
+    opts: defaults
+    state: present
+
+- name: mount cifs-home
+  mount:
+    path: /srv/cifs-home
+    src: /dev/mapper/data-cifs--home
+    fstype: xfs
+    opts: defaults
+    state: present
+
+- name: mount cifs-share
+  mount:
+    path: /srv/cifs-share
+    src: /dev/mapper/data-cifs--share
+    fstype: xfs
+    opts: defaults
+    state: present
+
+# Configure /etc/exports
+- name: configure /etc/exports
+  template: 
+    src: templates/exports.j2
+    dest: /etc/exports
+    owner: root
+    group: root
+    seuser: system_u
+    serole: object_r
+    setype: exports_t
+    mode: '0644'
+
+# Configure /etc/samba/smb.conf
+- name: configure /etc/samba/smb.conf
+  template: 
+    src: templates/smb.conf.j2
+    dest: /etc/samba/smb.conf
+    owner: root
+    group: root
+    seuser: system_u
+    serole: object_r
+    setype: samba_etc_t
+    mode: '0644'
+
+# update firewall
+- name: update firewalld to add nfs
+  firewalld:
+    service: nfs
+    permanent: yes
+    state: enabled
+    immediate: yes
+
+- name: update firewalld to add samba
+  firewalld:
+    service: samba
+    permanent: yes
+    state: enabled
+    immediate: yes
+
+# restart services
+- name: restart nfs-server
+  systemd:
+    name: nfs-server
+    enabled: yes
+    state: restarted
+
+- name: restart samba
+  systemd:
+    name: smb
+    enabled: yes
+    state: restarted

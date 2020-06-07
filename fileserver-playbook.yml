@@ -1,0 +1,7 @@
+---
+- name: configure file servers
+  hosts: fileservers
+  become: yes
+  roles:
+    - common
+    - fileserver
