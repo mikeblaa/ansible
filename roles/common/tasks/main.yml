@@ -40,4 +40,10 @@
     name: home-mike.mount
     enabled: yes
     state: started
+
+- name: set selinux use_nfs_home_dirs
+  seboolean:
+    name: use_nfs_home_dirs
+    state: yes
+    persistent: yes
 ...
