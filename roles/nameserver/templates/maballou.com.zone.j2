@@ -1,6 +1,6 @@
 $ORIGIN maballou.com.
 $TTL 3D
-@               IN      SOA     names-1.maballou.com. root.maballou.com. (
+@               IN      SOA     {{ inventory_hostname }}. root.maballou.com. (
                                 1       ; Serial
                                 8H      ; Refresh
                                 2H      ; Retry
@@ -26,5 +26,5 @@ bridge-1        IN      A       192.168.0.251
 bridge-2        IN      A       192.168.0.252
 pi              IN      A       192.168.0.253
 gateway         IN      A       192.168.0.254
-esxi            IN      CNAME   esxi-1.maballou.com.
+esxi            IN      CNAME   esxi-2.maballou.com.
 files           IN      CNAME   files-1.maballou.com.
