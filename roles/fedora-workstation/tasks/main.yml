@@ -94,4 +94,10 @@
     name: mnt-share.mount
     enabled: yes
     state: started
+
+- name: enable sshd
+  systemd:
+    name: sshd
+    enabled: yes
+    state: started
 ...

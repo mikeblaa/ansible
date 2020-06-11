@@ -50,3 +50,9 @@
     name: named
     enabled: yes
     state: restarted
+
+# Install epel release
+# dnf install epel-release
+# yum update epel-release
+# yum module install 389-directory-server:stable/default
+# systemctl enable --now  dirsrv.target 
