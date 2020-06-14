@@ -4,4 +4,5 @@
   become: yes
   roles:
     - common
-    - fileserver
+    - centos-server
+    - file-server

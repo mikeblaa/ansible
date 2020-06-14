@@ -1,0 +1,7 @@
+---
+- name: enabled cockpit
+  systemd:
+    name: cockpit.socket
+    enabled: yes
+    state: started
+...
