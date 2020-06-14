@@ -1,0 +1,83 @@
+---
+# Update all packages
+- name: update packages
+  dnf:
+    name: '*'
+    state: latest
+
+# Install NFS and CIFS packages
+- name: install nfs-utils
+  dnf:
+    name:
+      - nfs-utils
+
+# Gather facts on disk configuration
+# TODO
+
+# Create LVM volume groups
+- name: create LVM volume groups
+  lvg:
+    vg: data
+    pvs: /dev/sdb,/dev/sdc,/dev/sdd
+
+# Create LVM logical volumes
+- name: create backup logical volume
+  lvol:
+    lv: backup
+    vg: data
+    size: 2T
+    opts: -i3 -I64
+
+# Create filesystems
+- name: create filesystem on backup
+  filesystem:
+    fstype: xfs
+    dev: /dev/mapper/data-backup
+
+# Create mountpoints and set ownership
+- name: create backup
+  file:
+    path: /srv/backup
+    state: directory
+    mode: u=rwx,g=rx,o=rx
+    owner: root
+    group: root
+    seuser: system_u
+    serole: object_r
+
+# Mount LVM volumes
+- name: mount backup
+  mount:
+    path: /srv/backup
+    src: /dev/mapper/data-backup
+    fstype: xfs
+    opts: defaults
+    state: present
+
+# Configure /etc/exports
+- name: configure /etc/exports
+  template: 
+    src: templates/exports.j2
+    dest: /etc/exports
+    owner: root
+    group: root
+    seuser: system_u
+    serole: object_r
+    setype: exports_t
+    mode: '0644'
+
+# update firewall
+- name: update firewalld to add nfs
+  firewalld:
+    service: nfs
+    permanent: yes
+    state: enabled
+    immediate: yes
+
+# restart services
+- name: restart nfs-server
+  systemd:
+    name: nfs-server
+    enabled: yes
+    state: restarted
+...

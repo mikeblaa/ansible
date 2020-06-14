@@ -1,0 +1,8 @@
+---
+- name: configure file servers
+  hosts: backupservers
+  become: yes
+  roles:
+    - common
+    - centos-server
+    - backup-server
