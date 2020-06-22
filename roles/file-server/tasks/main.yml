@@ -148,6 +148,15 @@
 - name: Add user to samba
   shell: "(echo {{ cifs_password }}; echo {{ cifs_password }}) | smbpasswd -s -a {{ cifs_username }}"
 
+# Add backup job to daily cron
+- name: add backup job to daily cron
+  copy:
+    src: files/backup
+    dest: /etc/cron.daily/backup
+    owner: root
+    group: root
+    mode: '0755'
+
 # update firewall
 - name: update firewalld to add nfs
   firewalld:

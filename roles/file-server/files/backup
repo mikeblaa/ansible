@@ -1,0 +1,15 @@
+#!/bin/sh
+
+mkdir -p /mnt/backup
+
+mount -t nfs -o rw,hard,intr,async,rsize=16384,wsize=16384 backups:/backup /mnt/backup
+
+rsync -avhi /srv/ /mnt/backup/files/
+
+umount /mnt/backup
+
+EXITVALUE=$?
+if [ $EXITVALUE != 0 ]; then
+    /usr/bin/logger -t backup "ALERT exited abnormally with [$EXITVALUE]"
+fi
+exit $EXITVALUE
