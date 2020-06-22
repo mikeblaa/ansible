@@ -122,8 +122,8 @@
 
 # Configure /etc/exports
 - name: configure /etc/exports
-  template: 
-    src: templates/exports.j2
+  copy: 
+    src: files/exports
     dest: /etc/exports
     owner: root
     group: root
@@ -134,8 +134,8 @@
 
 # Configure /etc/samba/smb.conf
 - name: configure /etc/samba/smb.conf
-  template: 
-    src: templates/smb.conf.j2
+  copy: 
+    src: files/smb.conf
     dest: /etc/samba/smb.conf
     owner: root
     group: root

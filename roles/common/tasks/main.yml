@@ -26,13 +26,11 @@
 
 - name: systemd automount files
   template: 
-    src: "{{ item }}" 
-    dest: /etc/systemd/system/{{ item | basename | regex_replace('\.j2','') }}
+    src: files/home-mike.mount 
+    dest: /etc/systemd/system/home-mike.mount
     owner: root
     group: root
     mode: '0644'
-  with_fileglob:
-      - templates/*.j2
 
 - name: enabled networkmanager-wait-online.service
   systemd:

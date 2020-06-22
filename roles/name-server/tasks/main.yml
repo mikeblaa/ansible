@@ -26,8 +26,8 @@
 
 # Update some etc files
 - name: copy named.conf
-  template: 
-    src: templates/named.conf.j2
+  copy: 
+    src: files/named.conf
     dest: /etc/named.conf
     owner: root
     group: named
