@@ -7,6 +7,7 @@ After=NetworkManager-wait-online.service
 What=files.maballou.com:/nfs-home/mike
 Where=/home/mike
 Type=nfs
+Options=vers=4,rsize=16384,wsize=16384
 
 [Install]
 WantedBy=multi-user.target
