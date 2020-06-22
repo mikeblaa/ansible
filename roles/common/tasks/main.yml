@@ -1,4 +1,9 @@
 ---
+- name: update packages
+  dnf:
+    name: '*'
+    state: latest
+
 # Create local users until an LDAP is set up
 - name: add group mike
   group:
