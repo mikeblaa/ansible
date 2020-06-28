@@ -50,6 +50,22 @@
     name:
       - piecash
 
+- name: fix a bug in piecash
+  lineinfile:
+      path: /usr/local/lib/python3.8/site-packages/piecash/core/session.py
+      state: present
+      regexp: "^.*'Gnucash': 300000.*"
+      line: "        'Gnucash': 3000001,"
+      backup: yes
+
+- name: fix a bug in piecash
+  lineinfile:
+      path: /usr/local/lib/python3.8/site-packages/piecash/core/session.py
+      state: present
+      regexp: "^.*'splits':.*"
+      line: "        'splits': 5,"
+      backup: yes
+
 - name: set selinux cups_execmem 
   seboolean:
     name: cups_execmem
