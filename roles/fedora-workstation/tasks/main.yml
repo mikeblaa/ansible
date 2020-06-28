@@ -38,6 +38,7 @@
       - gparted
       - jnettop
       - keepass
+      - libdbi-dbd-sqlite
       - nfs-utils
       - python3-libsemanage
       - simple-scan
