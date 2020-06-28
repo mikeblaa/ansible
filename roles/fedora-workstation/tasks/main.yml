@@ -45,6 +45,11 @@
       - vim
     state: latest
 
+- name: install pip packages
+  pip:
+    name:
+      - piecash
+
 - name: set selinux cups_execmem 
   seboolean:
     name: cups_execmem
