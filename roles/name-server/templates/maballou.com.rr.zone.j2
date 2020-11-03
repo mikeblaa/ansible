@@ -1,6 +1,6 @@
 $ORIGIN 0.168.192.in-addr.arpa.
 $TTL 3D
-@       IN      SOA     names-1.maballou.com. root.maballou.com. (
+@       IN      SOA     {{ inventory_hostname }}. root.maballou.com. (
                                 1       ; Serial
                                 8H      ; Refresh
                                 2H      ; Retry
@@ -8,6 +8,9 @@ $TTL 3D
                                 1D)     ; Minimum TTL
 
         IN      NS      names-1.maballou.com.
+
+
+
 
 1       IN      PTR     names-1.maballou.com.
 2       IN      PTR     names-2.maballou.com.
@@ -18,8 +21,12 @@ $TTL 3D
 10      IN      PTR     files-1.maballou.com.
 11      IN      PTR     backups.maballou.com.
 12      IN      PTR     miner.maballou.com.
-13      IN      PTR     test.maballou.com.
+13      IN      PTR     docker.maballou.com.
+17      IN      PTR     okd4-services.maballou.com.
+18      IN      PTR     okd4-pfsense.maballou.com.
+50      IN      PTR     test.maballou.com.
 99      IN      PTR     prime.maballou.com.
+250     IN      PTR     pi-1.maballou.com.
 251     IN      PTR     bridge-1.maballou.com.
 252     IN      PTR     bridge-2.maballou.com.
 253     IN      PTR     pi.maballou.com.

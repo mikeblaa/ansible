@@ -10,3 +10,6 @@ ansible-playbook -i inventory file-server-playbook.yml -u admin --ask-pass --ask
 ansible-playbook -i inventory name-server-playbook.yml -u admin --ask-pass --ask-vault-pass
 
 # added ssh-key
+
+# manual
+https://www.if-not-true-then-false.com/2015/fedora-nvidia-guide/
