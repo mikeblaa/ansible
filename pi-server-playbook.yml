@@ -1,0 +1,6 @@
+---
+- name: Configre pi servers
+  hosts: piservers
+  become: yes
+  roles:
+    - pi-server

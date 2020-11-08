@@ -1,0 +1,92 @@
+---
+# 1 timezone and NTP server
+# 2 network ip/mask/gateway/dns
+
+# update packages
+- name: update packages
+  dnf:
+    name: '*'
+    state: latest
+
+# Add Docker repository
+- name: Add Docker repository
+  command: dnf config-manager --add-repo https://download.docker.com/linux/fedora/docker-ce.repo
+  args:
+    warn: false
+
+# Install Docker
+- name: Install Docker Engine
+  dnf:
+    name:
+      - docker-ce
+      - docker-ce-cli
+      - containerd.io
+      - docker-compose
+
+# Enable old CGroups
+- name: Enable old CGroups
+  command: grubby --update-kernel=ALL --args="systemd.unified_cgroup_hierarchy=0"
+
+# Enable Docker
+- name: Enable Docker
+  systemd:
+    name: docker
+    state: started
+    enabled: yes
+
+# Install firewalld
+- name: Install firewalld
+  dnf:
+    name: firewalld
+
+# Enable firewalld
+- name: Enable firewalld
+  systemd:
+    name: firewalld
+    state: started
+    enabled: yes
+
+# Add DHCP to firewalld
+- name: Add DHCP to firewalld
+  firewalld:
+    service: dhcp
+    permanent: yes
+    state: enabled
+    immediate: yes
+
+# Add DNS to firewalld
+- name: Add DNS to firewalld
+  firewalld:
+    service: dns 
+    permanent: yes
+    state: enabled
+    immediate: yes
+
+# Add HTTP to firewalld
+- name: Add HTTP to firewalld
+  firewalld:
+    service: http
+    permanent: yes
+    state: enabled
+    immediate: yes
+
+# Install Git
+- name: Install Git
+  dnf:
+    name: git
+
+# Checkout Docker repo
+- name: Checkout Docker repo
+  git:
+    repo: 'https://github.com/mikeblaa/docker.git'
+    dest: /home/admin/docker
+
+# Reboot to enable CGroups
+- name: Reboot to enable CGroups
+  reboot:
+    msg: "Reboot initiated by Ansible"
+    connect_timeout: 5
+    reboot_timeout: 600
+    pre_reboot_delay: 0
+    post_reboot_delay: 30
+    test_command: whoami
