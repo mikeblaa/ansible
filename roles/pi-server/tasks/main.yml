@@ -1,20 +1,53 @@
 ---
-# 1 timezone and NTP server
-# 2 network ip/mask/gateway/dns
+# Set timezone and NTP server
+- name: Set timezone to US/Central
+  timezone:
+    name: US/Central
 
-# update packages
-- name: update packages
+# Update packages
+- name: Update packages
   dnf:
     name: '*'
     state: latest
+
+# Enable old CGroups
+- name: Check if systemd.unified_cgroup_hierarchy=0 is set in kernelopts
+  command: grep -Eq '^kernelopts=.* systemd\.unified_cgroup_hierarchy=0' /boot/grub2/grubenv
+  args:
+    warn: false
+  register: grubenv_has_cgroup_exception
+  ignore_errors: yes
+  changed_when: no
+  failed_when: false
+- name: Configure systemd.unified_cgroup_hierarchy=0 in kernelopts
+  command: grubby --update-kernel=ALL --args="systemd.unified_cgroup_hierarchy=0"
+  when:
+   - grubenv_has_cgroup_exception.rc != 0
+- name: reboot machine
+  reboot:
+    reboot_timeout: 600
+  when:
+   - grubenv_has_cgroup_exception.rc != 0
+
+# Check if the Docker repository is installed
+- name: Check for Docker repository
+  command: dnf config-manager docker-ce-stable --dump
+  args:
+    warn: false
+  register: docker_ce_repository_status
+  ignore_errors: yes
+  changed_when: no
+  failed_when: false
 
 # Add Docker repository
 - name: Add Docker repository
   command: dnf config-manager --add-repo https://download.docker.com/linux/fedora/docker-ce.repo
   args:
     warn: false
+  changed_when:
+    - docker_ce_repository_status.rc != 0
 
-# Install Docker
+#Install Docker
 - name: Install Docker Engine
   dnf:
     name:
@@ -23,16 +56,19 @@
       - containerd.io
       - docker-compose
 
-# Enable old CGroups
-- name: Enable old CGroups
-  command: grubby --update-kernel=ALL --args="systemd.unified_cgroup_hierarchy=0"
-
 # Enable Docker
 - name: Enable Docker
   systemd:
     name: docker
     state: started
     enabled: yes
+
+# Add user admin to docker group
+- name: Add user admin to docker group
+  user:
+    name: admin
+    groups: docker
+    append: yes
 
 # Install firewalld
 - name: Install firewalld
@@ -50,25 +86,33 @@
 - name: Add DHCP to firewalld
   firewalld:
     service: dhcp
-    permanent: yes
     state: enabled
     immediate: yes
+    permanent: yes
 
 # Add DNS to firewalld
 - name: Add DNS to firewalld
   firewalld:
     service: dns 
-    permanent: yes
     state: enabled
     immediate: yes
+    permanent: yes
 
 # Add HTTP to firewalld
 - name: Add HTTP to firewalld
   firewalld:
     service: http
-    permanent: yes
     state: enabled
     immediate: yes
+    permanent: yes
+
+# Add masquerade to firewalld so Docker containers can access the Internet
+- name: Add masquerade to firewalld so Docker containers can access the Internet
+  firewalld:
+    masquerade: 'True'
+    state: enabled
+    permanent: yes
+    zone: public
 
 # Install Git
 - name: Install Git
@@ -79,14 +123,9 @@
 - name: Checkout Docker repo
   git:
     repo: 'https://github.com/mikeblaa/docker.git'
-    dest: /home/admin/docker
+    dest: /opt/docker
 
-# Reboot to enable CGroups
-- name: Reboot to enable CGroups
-  reboot:
-    msg: "Reboot initiated by Ansible"
-    connect_timeout: 5
-    reboot_timeout: 600
-    pre_reboot_delay: 0
-    post_reboot_delay: 30
-    test_command: whoami
+# Start Pihole with docker-compose
+- name: Create and start services
+  docker_compose:
+    project_src: /opt/docker/pihole
