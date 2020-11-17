@@ -42,8 +42,15 @@
       - nfs-utils
       - python3-libsemanage
       - simple-scan
+      - snapd
       - vim
     state: latest
+
+# Install Visual Studio Code using snap with classic confinement
+- name: Install Visual Studio Code with option --classic
+  snap:
+    name: code
+    classic: yes
 
 - name: install pip packages
   pip:
@@ -52,7 +59,7 @@
 
 - name: fix a bug in piecash
   lineinfile:
-      path: /usr/local/lib/python3.8/site-packages/piecash/core/session.py
+      path: /usr/local/lib/python3.9/site-packages/piecash/core/session.py
       state: present
       regexp: "^.*'Gnucash': 300000.*"
       line: "        'Gnucash': 3000001,"
@@ -60,7 +67,7 @@
 
 - name: fix a bug in piecash
   lineinfile:
-      path: /usr/local/lib/python3.8/site-packages/piecash/core/session.py
+      path: /usr/local/lib/python3.9/site-packages/piecash/core/session.py
       state: present
       regexp: "^.*'splits':.*"
       line: "        'splits': 5,"
