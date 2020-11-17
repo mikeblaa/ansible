@@ -1,3 +1,8 @@
 Docker no route to host
 Containers could not talk to the Internet due to firewalld, fix:
 firewall-cmd --zone=public --add-masquerade --permanent
+
+Fedora 33
+Set static ip/netmask/gateway using nmcli
+Set hostname using hostnamectl
+Set dns and search domain using resolvectl
