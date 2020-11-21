@@ -4,13 +4,45 @@
 - name: set hostname
   hostname:
     name: prime.maballou.com
-#  - name: configure networking
-#    nmcli:
-#      dns4: 192.168.0.1 192.168.0.2
-#      dns6: fe80::a4be:aa5f:694d:2c48 fe80::20c:29ff:fee7:7379
-#      gw4: 192.168.0.254
-#      ip4: 192.168.0.99/24
-#      state: present
+    use: systemd
+
+- name: install needed network manager libs
+  package:
+    name:
+      - NetworkManager-libnm
+      - nm-connection-editor
+      - python3-libsemanage
+      - policycoreutils-python-utils
+    state: present
+
+- name: configure networking
+  nmcli:
+    conn_name: 'Wired connection 1'
+    type: ethernet
+    ip4: 192.168.0.99/24
+    gw4: 192.168.0.254
+    state: present
+
+- name: set local DNS server using systemd-resolved
+  lineinfile:
+      path: /etc/systemd/resolved.conf
+      state: present
+      regexp: "^#?DNS=.*"
+      line: "DNS=192.168.0.250"
+      backup: yes
+
+- name: set local DNS server using systemd-resolved
+  lineinfile:
+      path: /etc/systemd/resolved.conf
+      state: present
+      regexp: "^#?Domains=.*"
+      line: "Domains=maballou.com"
+      backup: yes
+
+- name: restart systemd-resolved
+  systemd:
+    name: systemd-resolved
+    state: restarted
 
 - name: enable third-party repositories
   dnf:
@@ -45,6 +77,15 @@
       - snapd
       - vim
     state: latest
+
+# Enable classic snap support
+- name: Create a symbolic link
+  file:
+    src: /var/lib/snapd/snap
+    dest: /snap
+    owner: root
+    group: root
+    state: link
 
 # Install Visual Studio Code using snap with classic confinement
 - name: Install Visual Studio Code with option --classic
