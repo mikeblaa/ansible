@@ -22,27 +22,19 @@
     ip4: 192.168.0.99/24
     gw4: 192.168.0.254
     state: present
+#  notify: restart NetworkManager
 
-- name: set local DNS server using systemd-resolved
+- name: set local DNS server and search domain using systemd-resolved
   lineinfile:
-      path: /etc/systemd/resolved.conf
-      state: present
-      regexp: "^#?DNS=.*"
-      line: "DNS=192.168.0.250"
-      backup: yes
-
-- name: set local DNS server using systemd-resolved
-  lineinfile:
-      path: /etc/systemd/resolved.conf
-      state: present
-      regexp: "^#?Domains=.*"
-      line: "Domains=maballou.com"
-      backup: yes
-
-- name: restart systemd-resolved
-  systemd:
-    name: systemd-resolved
-    state: restarted
+    path: /etc/systemd/resolved.conf
+    state: present
+    regexp: "{{ item.regexp }}"
+    line: "{{ item.line }}"
+    backup: yes
+  with_items:
+    - { regexp: '^#?DNS=.*', line: 'DNS=192.168.0.250' }
+    - { regexp: '^#?Domains=.*', line: 'Domains=maballou.com' }
+  notify: restart systemd-resolved
 
 - name: enable third-party repositories
   dnf:
