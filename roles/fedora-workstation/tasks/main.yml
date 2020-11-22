@@ -7,7 +7,7 @@
     use: systemd
 
 - name: install needed network manager libs
-  package:
+  dnf:
     name:
       - NetworkManager-libnm
       - nm-connection-editor
@@ -19,8 +19,8 @@
   nmcli:
     conn_name: 'Wired connection 1'
     type: ethernet
-    ip4: 192.168.0.99/24
-    gw4: 192.168.0.254
+    ip4: '192.168.0.99/24'
+    gw4: '192.168.0.254'
     state: present
 #  notify: restart NetworkManager
 
@@ -35,6 +35,19 @@
     - { regexp: '^#?DNS=.*', line: 'DNS=192.168.0.250' }
     - { regexp: '^#?Domains=.*', line: 'Domains=maballou.com' }
   notify: restart systemd-resolved
+
+- name: install RPM Fusion rpms for nVidia driver setup
+  dnf:
+    name:
+      - 'https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-33.noarch.rpm'
+      - 'https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-33.noarch.rpm'
+    state: present
+
+- name: install nVidia drivers
+  dnf:
+    name:
+      - akmod-nvidia
+    state: present
 
 - name: enable third-party repositories
   dnf:
@@ -84,6 +97,12 @@
   snap:
     name: code
     classic: yes
+
+- name: add existing user mike to group libvirt
+  user:
+    name: mike
+    groups: libvirt
+    append: yes
 
 - name: install pip packages
   pip:
