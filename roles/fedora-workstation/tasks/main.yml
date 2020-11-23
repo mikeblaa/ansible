@@ -36,33 +36,33 @@
     - { regexp: '^#?Domains=.*', line: 'Domains=maballou.com' }
   notify: restart systemd-resolved
 
-- name: install RPM Fusion rpms for nVidia driver setup
+- name: enable third-party repositories
   dnf:
-    name:
-      - 'https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-33.noarch.rpm'
-      - 'https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-33.noarch.rpm'
-    state: present
+    name: fedora-workstation-repositories
+    state: latest
+
+- name: enable third-party repositories
+  lineinfile: 
+    path: "{{ item }}"
+    create: false # so raise error if not already installed
+    regexp: enabled=
+    line: enabled=1
+    firstmatch: yes
+  with_items:
+    - /etc/yum.repos.d/google-chrome.repo
+    - /etc/yum.repos.d/rpmfusion-nonfree-nvidia-driver.repo
+    - /etc/yum.repos.d/rpmfusion-nonfree-steam.repo
+
+- name: update packages
+  dnf:
+    name: '*'
+    state: latest
 
 - name: install nVidia drivers
   dnf:
     name:
       - akmod-nvidia
     state: present
-
-- name: enable third-party repositories
-  dnf:
-    name: fedora-workstation-repositories
-    state: latest
-
-- name: enable google-chrome repository
-  command: dnf config-manager --set-enabled google-chrome
-  args:
-    warn: false
-
-- name: update packages
-  dnf:
-    name: '*'
-    state: latest
 
 - name: install multiple packages
   dnf:
@@ -80,11 +80,12 @@
       - python3-libsemanage
       - simple-scan
       - snapd
+      - steam
       - vim
     state: latest
 
-# Enable classic snap support
-- name: Create a symbolic link
+# Enable classic snap support for Visual Studio Code snap
+- name: enable classic snap support for Visual Studio Code snap
   file:
     src: /var/lib/snapd/snap
     dest: /snap
@@ -93,7 +94,7 @@
     state: link
 
 # Install Visual Studio Code using snap with classic confinement
-- name: Install Visual Studio Code with option --classic
+- name: install Visual Studio Code snap with option --classic
   snap:
     name: code
     classic: yes
