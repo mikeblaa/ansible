@@ -16,7 +16,7 @@
     comment: Mike
     uid: 10000
     group: mike
-    groups: users,wheel
+    groups: users,wheel,libvirt
     password: $6$IzOCD.iKvcFk4OHg$Cs7Sctf2AyLhgOtMLE1618iP0eOyQaoyC2NlSmm3ytlLRtsA82PkWCN0sxYT66Lhw53t0BkQSD9ksK0en4hSF/
 
 - name: install nfs-utils
