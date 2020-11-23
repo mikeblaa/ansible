@@ -56,3 +56,4 @@
 # yum update epel-release
 # yum module install 389-directory-server:stable/default
 # systemctl enable --now  dirsrv.target 
+...
