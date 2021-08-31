@@ -81,6 +81,14 @@
     name: code
     classic: yes
 
+# Install Slack
+
+# Set Slack to start on login
+
+# Install Discord
+
+# Set Discord to start on login
+
 - name: add existing user mike to group libvirt
   user:
     name: mike
