@@ -55,7 +55,6 @@
       - gnucash
       - google-chrome-stable
       - gparted
-      - jnettop
       - keepass
       - libdbi-dbd-sqlite
       - nfs-utils
@@ -76,10 +75,10 @@
     state: link
 
 # Install Visual Studio Code using snap with classic confinement
-- name: install Visual Studio Code snap with option --classic
-  snap:
-    name: code
-    classic: yes
+# - name: install Visual Studio Code snap with option --classic
+#   snap:
+#     name: code
+#     classic: yes
 
 # Install Slack
 
