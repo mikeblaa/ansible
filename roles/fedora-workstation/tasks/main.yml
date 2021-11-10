@@ -58,6 +58,7 @@
       - keepass
       - libdbi-dbd-sqlite
       - nfs-utils
+      - perl-LWP-Protocol-https # Needed by GnuCash after FC33
       - python3-libsemanage
       - simple-scan
       - snapd
