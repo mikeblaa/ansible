@@ -76,34 +76,11 @@
     group: root
     state: link
 
-# Install Visual Studio Code using rpm
-- name: import Visual Studio Code repository key
-  rpm_key:
-    state: present
-    key: https://packages.microsoft.com/keys/microsoft.asc
-
-- name: create Visual Studio Code repository file
-  copy: 
-    src: files/vscode.repo
-    dest: /etc/yum.repos.d/vscode.repo
-    owner: root
-    group: root
-    seuser: system_u
-    serole: object_r
-    setype: system_conf_t
-    mode: '0644'
-
-- name: install Visual Studio Code
-  dnf:
-    name:
-      - code
-    state: latest
-
-# Install Visual Studio Code using snap with classic confinement
-# - name: install Visual Studio Code snap with option --classic
-#   snap:
-#     name: code
-#     classic: yes
+Install Visual Studio Code using snap with classic confinement
+- name: install Visual Studio Code snap with option --classic
+  snap:
+    name: code
+    classic: yes
 
 # Install Slack using snap with classic confinement
 - name: install Slack using snap with option --classic
