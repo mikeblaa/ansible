@@ -60,6 +60,7 @@
       - nfs-utils
       - perl-LWP-Protocol-https # Needed by GnuCash after FC33
       - python3-libsemanage
+      - python3-pip
       - simple-scan
       - snapd
       - steam
@@ -75,17 +76,47 @@
     group: root
     state: link
 
+# Install Visual Studio Code using rpm
+- name: import Visual Studio Code repository key
+  rpm_key:
+    state: present
+    key: https://packages.microsoft.com/keys/microsoft.asc
+
+- name: create Visual Studio Code repository file
+  copy: 
+    src: files/vscode.repo
+    dest: /etc/yum.repos.d/vscode.repo
+    owner: root
+    group: root
+    seuser: system_u
+    serole: object_r
+    setype: system_conf_t
+    mode: '0644'
+
+- name: install Visual Studio Code
+  dnf:
+    name:
+      - code
+    state: latest
+
 # Install Visual Studio Code using snap with classic confinement
 # - name: install Visual Studio Code snap with option --classic
 #   snap:
 #     name: code
 #     classic: yes
 
-# Install Slack
+# Install Slack using snap with classic confinement
+- name: install Slack using snap with option --classic
+  snap:
+    name: slack
+    classic: yes
 
 # Set Slack to start on login
 
-# Install Discord
+# Install Discord using snap with classic confinement
+- name: install Discord using snap with option --classic
+  snap:
+    name: discord
 
 # Set Discord to start on login
 
@@ -102,7 +133,7 @@
 
 - name: fix a bug in piecash
   lineinfile:
-      path: /usr/local/lib/python3.9/site-packages/piecash/core/session.py
+      path: /usr/local/lib/python3.10/site-packages/piecash/core/session.py
       state: present
       regexp: "^.*'Gnucash': 300000.*"
       line: "        'Gnucash': 3000001,"
@@ -110,7 +141,7 @@
 
 - name: fix a bug in piecash
   lineinfile:
-      path: /usr/local/lib/python3.9/site-packages/piecash/core/session.py
+      path: /usr/local/lib/python3.10/site-packages/piecash/core/session.py
       state: present
       regexp: "^.*'splits':.*"
       line: "        'splits': 5,"
