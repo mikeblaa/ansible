@@ -1,9 +1,10 @@
 ---
 - include_vars: main.yml
 
+# Set the workstation hostname, comment out if testing on Boxes
 - name: set hostname
   hostname:
-    name: prime.maballou.com
+    name: '{{ workstation_hostname }}'
     use: systemd
 
 - name: set local DNS server and search domain using systemd-resolved
@@ -14,8 +15,8 @@
     line: "{{ item.line }}"
     backup: yes
   with_items:
-    - { regexp: '^#?DNS=.*', line: 'DNS=192.168.0.250' }
-    - { regexp: '^#?Domains=.*', line: 'Domains=maballou.com' }
+    - { regexp: '^#?DNS=.*', line: 'DNS={{ workstation_dns }}' }
+    - { regexp: '^#?Domains=.*', line: 'Domains={{ workstation_domain }}' }
   notify: restart systemd-resolved
 
 - name: enable third-party repositories
@@ -76,7 +77,7 @@
     group: root
     state: link
 
-Install Visual Studio Code using snap with classic confinement
+# Install Visual Studio Code using snap with classic confinement
 - name: install Visual Studio Code snap with option --classic
   snap:
     name: code
@@ -88,14 +89,10 @@ Install Visual Studio Code using snap with classic confinement
     name: slack
     classic: yes
 
-# Set Slack to start on login
-
 # Install Discord using snap with classic confinement
 - name: install Discord using snap with option --classic
   snap:
     name: discord
-
-# Set Discord to start on login
 
 - name: add existing user mike to group libvirt
   user:

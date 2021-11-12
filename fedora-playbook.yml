@@ -4,6 +4,10 @@
   connection: local
   become: yes
   roles:
-    - common
-    - fedora-workstation
+    - role: common
+    - role: fedora-workstation
+      vars:
+        workstation_hostname: prime.maballou.com
+        workstation_domain: maballou.com
+        workstation_dns: 192.168.0.250
 ...
