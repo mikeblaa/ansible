@@ -47,7 +47,7 @@
       - akmod-nvidia
     state: present
 
-- name: install multiple packages
+- name: install dnf packages
   dnf:
     name:
       - brasero
@@ -67,6 +67,13 @@
       - steam
       - vim
     state: latest
+
+- name: install pip packages
+  pip:
+    name:
+      - piecash
+      - yfinance
+      - alpha_vantage
 
 # Enable classic snap support for Visual Studio Code snap
 - name: enable classic snap support for Visual Studio Code snap
@@ -100,11 +107,7 @@
     groups: libvirt
     append: yes
 
-- name: install pip packages
-  pip:
-    name:
-      - piecash
-
+# Miscellaneous OS settings
 - name: set selinux cups_execmem 
   seboolean:
     name: cups_execmem
@@ -134,6 +137,7 @@
     line: 'After=network-online.target'
     insertbefore: Before=.*
 
+# Set up network filesystem automounts
 - name: systemd automount files
   template: 
     src: "{{ item }}" 
@@ -156,6 +160,7 @@
     enabled: yes
     state: started
 
+# Enable sshd
 - name: enable sshd
   systemd:
     name: sshd

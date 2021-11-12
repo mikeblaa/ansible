@@ -1,3 +1,5 @@
+---
 workstation_hostname: fedora-workstation
 workstation_domain: localdomain
 workstation_dns: 8.8.8.8
+...
