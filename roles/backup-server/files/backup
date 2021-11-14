@@ -1,0 +1,22 @@
+#!/bin/sh
+
+/usr/bin/logger --tag backup "Starting weekly backup."
+
+# Verify external hard drive is mounted, if not log alert and exit
+if [ ! -d "/media/veracrypt1" ]; then
+    /usr/bin/logger --stderr --tag backup --priority user.alert \
+        "Weekly backup failed - external hard drive not mounted"
+    exit 1
+fi
+
+# Backup all files in /srv
+rsync -avhi /srv/ /media/veracrypt1
+
+EXITVALUE=$?
+if [ $EXITVALUE != 0 ]; then
+    /usr/bin/logger --tag backup --priority user.err \
+        "Weekly backup failed - rsync exited abnormally with [$EXITVALUE]"
+    exit $EXITVALUE
+fi
+
+/usr/bin/logger --tag backup "Finished weekly backup."

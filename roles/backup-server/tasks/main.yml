@@ -66,6 +66,18 @@
     setype: exports_t
     mode: '0644'
 
+# Copy backup script to cron.weekly
+- name: copy backup script to cron.weekly
+  copy: 
+    src: files/backup
+    dest: /etc/cron.weekly/backup
+    owner: root
+    group: root
+    seuser: system_u
+    serole: object_r
+    setype: bin_t
+    mode: '0755'
+
 # update firewall
 - name: update firewalld to add nfs
   firewalld:
