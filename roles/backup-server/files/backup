@@ -10,7 +10,7 @@ if [ ! -d "/media/veracrypt1" ]; then
 fi
 
 # Backup all files in /srv
-rsync -avhi /srv/ /media/veracrypt1
+rsync -avhi --delete /srv/ /media/veracrypt1
 
 EXITVALUE=$?
 if [ $EXITVALUE != 0 ]; then
