@@ -3,7 +3,8 @@
 /usr/bin/logger --tag backup "Starting weekly backup."
 
 # Verify external hard drive is mounted, if not log alert and exit
-if [ ! -d "/media/veracrypt1" ]; then
+findmnt --mountpoint /media/veracrypt1 > /dev/null 2>&1
+if [ $? != 0 ]; then
     /usr/bin/logger --stderr --tag backup --priority user.alert \
         "Weekly backup failed - external hard drive not mounted"
     exit 1
