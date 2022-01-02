@@ -91,6 +91,10 @@
     volumes:
       - "etc-pihole:/etc/pihole:z"
       - "/opt/docker/pihole/etc-dnsmasq.d:/etc/dnsmasq.d:z"
+    env:
+      TZ: "America/Chicago"
+      ServerIP: "{{ ansible_default_ipv4.address }}"
+      PIHOLE_DNS_: "1.1.1.1;1.0.0.1"
     cap_add:
       - "NET_ADMIN"
       - "CAP_NET_RAW"
