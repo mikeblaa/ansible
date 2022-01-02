@@ -10,65 +10,20 @@
     name: '*'
     state: latest
 
-# Enable old CGroups
-- name: Check if systemd.unified_cgroup_hierarchy=0 is set in kernelopts
-  command: grep -Eq '^kernelopts=.* systemd\.unified_cgroup_hierarchy=0' /boot/grub2/grubenv
-  args:
-    warn: false
-  register: grubenv_has_cgroup_exception
-  ignore_errors: yes
-  changed_when: no
-  failed_when: false
-- name: Configure systemd.unified_cgroup_hierarchy=0 in kernelopts
-  command: grubby --update-kernel=ALL --args="systemd.unified_cgroup_hierarchy=0"
-  when:
-   - grubenv_has_cgroup_exception.rc != 0
-- name: reboot machine
-  reboot:
-    reboot_timeout: 600
-  when:
-   - grubenv_has_cgroup_exception.rc != 0
-
-# Check if the Docker repository is installed
-- name: Check for Docker repository
-  command: dnf config-manager docker-ce-stable --dump
-  args:
-    warn: false
-  register: docker_ce_repository_status
-  ignore_errors: yes
-  changed_when: no
-  failed_when: false
-
-# Add Docker repository
-- name: Add Docker repository
-  command: dnf config-manager --add-repo https://download.docker.com/linux/fedora/docker-ce.repo
-  args:
-    warn: false
-  changed_when:
-    - docker_ce_repository_status.rc != 0
-
-#Install Docker
-- name: Install Docker Engine
+# Install Podman
+- name: Install Podman
   dnf:
     name:
-      - docker-ce
-      - docker-ce-cli
-      - containerd.io
-      - docker-compose
+      - podman
+      - podman-compose
+      - podman-docker
 
-# Enable Docker
-- name: Enable Docker
+# Enable Podman
+- name: Enable Podman
   systemd:
-    name: docker
+    name: podman
     state: started
     enabled: yes
-
-# Add user admin to docker group
-- name: Add user admin to docker group
-  user:
-    name: admin
-    groups: docker
-    append: yes
 
 # Install firewalld
 - name: Install firewalld
@@ -125,8 +80,70 @@
     repo: 'https://github.com/mikeblaa/docker.git'
     dest: /opt/docker
 
-# Start Pihole with docker-compose
-- name: Create and start services
-  docker_compose:
-    project_src: /opt/docker/pihole
+# Create Pihole container with Podman
+- name: Create Pihole container with Podman
+  containers.podman.podman_container:
+    name: pihole
+    image: docker.io/pihole/pihole:2021.12.1
+    state: present
+    network:
+      - "host"
+    volumes:
+      - "etc-pihole:/etc/pihole:z"
+      - "/opt/docker/pihole/etc-dnsmasq.d:/etc/dnsmasq.d:z"
+    cap_add:
+      - "NET_ADMIN"
+      - "CAP_NET_RAW"
+      - "CAP_SYS_NICE"
+      - "CAP_IPC_LOCK"
+    dns:
+      - "127.0.0.1"
+      - "1.1.1.1"
+    generate_systemd:
+      path: /tmp/
+      restart_policy: always
+      time: 120
+      names: yes
+
+# Install python3-libsemanage
+- name: Install python3-libsemanage
+  dnf:
+    name:
+      - python3-libsemanage
+    state: latest
+
+# Set selinux container_manage_cgroup
+- name: Set selinux container_manage_cgroup
+  seboolean:
+    name: container_manage_cgroup
+    state: yes
+    persistent: yes
+
+# Copy container-pihole systemd service
+- name: Copy container-pihole systemd service
+  copy: 
+    remote_src: yes
+    src: /tmp/container-pihole.service
+    dest: /etc/systemd/system/container-pihole.service
+    owner: root
+    group: root
+    seuser: system_u
+    serole: object_r
+    setype: systemd_unit_file_t
+    mode: '0640'
+
+# Disable and stop systemd-resolved systemd service
+- name: Disable and stop systemd-resolved systemd service
+  systemd:
+    name: systemd-resolved
+    enabled: no
+    state: stopped
+
+# Enable and start container-pihole systemd service
+- name: Enable and start container-pihole systemd service
+  systemd:
+    name: container-pihole
+    daemon_reload: yes
+    enabled: yes
+    state: started
 ...
