@@ -1,15 +1,28 @@
 #!/bin/sh
 
-mkdir -p /mnt/backup
+/usr/bin/logger --tag backup "Starting daily backup."
 
+# Create mountpoint and mount remote filesystem for backups
+mkdir -p /mnt/backup
 mount -t nfs -o rw,hard,intr,async,rsize=16384,wsize=16384 backups:/backup /mnt/backup
 
-rsync -avhi /srv/ /mnt/backup/files/
+EXITVALUE=$?
+if [ $? != 0 ]; then
+    /usr/bin/logger --tag backup --priority user.err \
+        "Daily backup failed - mount failed to mount remote filesystem with [$EXITVALUE]"
+    exit 1
+fi
 
-umount /mnt/backup
+# Backup all files in /srv
+rsync -avhi --delete /srv/ /mnt/backup/files/
 
 EXITVALUE=$?
 if [ $EXITVALUE != 0 ]; then
-    /usr/bin/logger -t backup "ALERT exited abnormally with [$EXITVALUE]"
+    /usr/bin/logger --tag backup --priority user.err \
+        "Daily backup failed - rsync exited abnormally with [$EXITVALUE]"
 fi
-exit $EXITVALUE
+
+# Cleanup by unmounting remote filesystem
+umount /mnt/backup
+
+/usr/bin/logger --tag backup "Finished daily backup."
