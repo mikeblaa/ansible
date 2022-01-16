@@ -1,7 +1,18 @@
 ---
+- name: install cockpit
+  dnf:
+    name:
+      - cockpit
+
 - name: enabled cockpit
   systemd:
     name: cockpit.socket
+    enabled: yes
+    state: started
+
+- name: enable chronyd
+  systemd:
+    name: chronyd.service
     enabled: yes
     state: started
 ...

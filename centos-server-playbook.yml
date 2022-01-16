@@ -1,0 +1,8 @@
+---
+- name: configure all servers
+  hosts: centosservers
+  become: yes
+  roles:
+    - common
+    - centos-server
+...
