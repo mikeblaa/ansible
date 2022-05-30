@@ -90,13 +90,12 @@
     classic: yes
 
 # Install Slack using snap with classic confinement
-- name: install Slack using snap with option --classic
+- name: install Slack snap
   snap:
     name: slack
-    classic: yes
 
 # Install Discord using snap with classic confinement
-- name: install Discord using snap with option --classic
+- name: install Discord snap
   snap:
     name: discord
 
