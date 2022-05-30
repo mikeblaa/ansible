@@ -56,7 +56,7 @@
       - gnucash
       - google-chrome-stable
       - gparted
-      - keepass
+      - keepassxc
       - libdbi-dbd-sqlite
       - nfs-utils
       - python3-libsemanage
