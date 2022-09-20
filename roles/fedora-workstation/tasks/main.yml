@@ -88,16 +88,28 @@
   snap:
     name: code
     classic: yes
+  register: result
+  until: result is not failed
+  retries: 5
+  delay: 5
 
 # Install Slack using snap with classic confinement
 - name: install Slack snap
   snap:
     name: slack
+  register: result
+  until: result is not failed
+  retries: 5
+  delay: 5
 
 # Install Discord using snap with classic confinement
 - name: install Discord snap
   snap:
     name: discord
+  register: result
+  until: result is not failed
+  retries: 5
+  delay: 5
 
 - name: add existing user mike to group libvirt
   user:
