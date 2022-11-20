@@ -84,7 +84,7 @@
 - name: Create Pihole container with Podman
   containers.podman.podman_container:
     name: pihole
-    image: docker.io/pihole/pihole:2022.01.1
+    image: docker.io/pihole/pihole:2022.11.1
     state: present
     network:
       - "host"
@@ -109,7 +109,7 @@
       time: 120
       names: yes
 
-# Install python3-libsemanage
+#Install python3-libsemanage
 - name: Install python3-libsemanage
   dnf:
     name:
