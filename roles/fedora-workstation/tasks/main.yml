@@ -56,7 +56,7 @@
       - gnucash
       - google-chrome-stable
       - gparted
-      - keepass
+      - keepassxc
       - libdbi-dbd-sqlite
       - nfs-utils
       - python3-libsemanage
@@ -88,17 +88,22 @@
   snap:
     name: code
     classic: yes
+  register: result
+  until: result is not failed
 
 # Install Slack using snap with classic confinement
-- name: install Slack using snap with option --classic
+- name: install Slack snap
   snap:
     name: slack
-    classic: yes
+  register: result
+  until: result is not failed
 
 # Install Discord using snap with classic confinement
-- name: install Discord using snap with option --classic
+- name: install Discord snap
   snap:
     name: discord
+  register: result
+  until: result is not failed
 
 - name: add existing user mike to group libvirt
   user:
