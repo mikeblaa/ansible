@@ -1,0 +1,9 @@
+---
+- name: configure directory servers
+  hosts: directoryservers
+  become: yes
+  roles:
+    - common
+    - centos-server
+    - directory-server
+...

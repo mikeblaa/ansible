@@ -1,0 +1,48 @@
+---
+- name: update packages
+  dnf:
+    name: '*'
+    state: latest
+
+# restart bind
+
+
+# dnf module enable 389-ds
+# dnf install 389-ds-base
+# systemctl enable --now  dirsrv.target 
+# https://directory.fedoraproject.org/docs/389ds/howto/quickstart.html
+# Create INF file
+# dscreate from-file /root/maballou.com.inf
+# dsidm maballou user create --uid mike --cn Mike --displayName 'Mike Ballou' --uidNumber 10000 --gidNumber 10000 --homeDirectory /home/mike
+
+# dsctl -l to list server instances
+# dsctl maballou stop
+# dsctl maballou remove --do-it
+
+# dsctl maballou db2bak
+# dsctl maballou backups
+# dsctl maballou bak2db /var/lib/dirsrv/slapd-maballou/bak/maballou-2020_06_28_17_59_14
+
+# dsctl maballou db2ldif userRoot
+# dsctl maballou ldif2db userRoot /var/lib/dirsrv/slapd-maballou/ldif/maballou-userRoot-2020_06_28_18_07_01.ldif
+
+# Install bind 
+# - name: install bind
+#   dnf:
+#     name:
+#       - bind
+
+# update firewall
+# - name: update firewalld
+#   firewalld:
+#     service: dns
+#     permanent: yes
+#     state: enabled
+#     immediate: yes
+
+# restart dirsrv
+# - name: restart named
+#   systemd:
+#     name: named
+#     enabled: yes
+#     state: restarted
