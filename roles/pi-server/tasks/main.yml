@@ -84,7 +84,7 @@
 - name: Create Pihole container with Podman
   containers.podman.podman_container:
     name: pihole
-    image: docker.io/pihole/pihole:2022.11.1
+    image: docker.io/pihole/pihole:2022.11.2
     state: present
     network:
       - "host"
