@@ -1,4 +1,4 @@
 ---
 dependencies:
-  - ansible.posix
+  - name: ansible.posix
 ---
