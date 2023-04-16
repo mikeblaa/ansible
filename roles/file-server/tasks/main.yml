@@ -22,7 +22,7 @@
 - name: create LVM volume groups
   lvg:
     vg: data
-    pvs: /dev/sdb,/dev/sdc
+    pvs: /dev/sdb,/dev/sdc,/dev/sdd
 
 # Create LVM logical volumes
 - name: create nfs-home logical volume
@@ -30,21 +30,21 @@
     lv: nfs-home
     vg: data
     size: 128G
-    opts: --type raid0
+    opts: --type raid0 --stripes 3
 
 - name: create cifs-home logical volume
   lvol:
     lv: cifs-home
     vg: data
-    size: 256G
-    opts: --type raid0
+    size: 64G
+    opts: --type raid0 --stripes 3
 
 - name: create cifs-share logical volume
   lvol:
     lv: cifs-share
     vg: data
-    size: 512G
-    opts: --type raid0
+    size: 768G
+    opts: --type raid0 --stripes 3
 
 # Create filesystems
 - name: create filesystem on nfs-home

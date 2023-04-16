@@ -14,7 +14,7 @@ if [ $? != 0 ]; then
 fi
 
 # Backup all files in /srv
-rsync -avhi --delete /srv/ /mnt/backup/files/
+# rsync -avhi --delete /srv/ /mnt/backup/files/
 
 EXITVALUE=$?
 if [ $EXITVALUE != 0 ]; then

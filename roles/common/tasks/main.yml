@@ -50,7 +50,7 @@
       - python3-libsemanage
 
 - name: set selinux use_nfs_home_dirs
-  seboolean:
+  ansible.posix.seboolean:
     name: use_nfs_home_dirs
     state: yes
     persistent: yes
