@@ -3,10 +3,22 @@
   hosts: localhost
   tasks:
     - name: Print all available facts
-      debug:
+      ansible.builtin.debug:
         var: ansible_facts
+
+    - name: Populate service facts
+      ansible.builtin.service_facts:
+
+    - name: Print service facts
+      ansible.builtin.debug:
+        var: ansible_facts.services
+
+    - name: check if service is present
+      ansible.builtin.debug:
+        msg: systemd-resolved.service is defined
+      when: ansible_facts.services["systemd-resolved.service"] is defined
+
     - name: Print a variable
       debug:
 #        msg: distribution_version is {{ distribution_version }}
         var: distribution_version
-...
