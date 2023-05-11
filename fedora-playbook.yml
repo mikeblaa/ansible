@@ -9,5 +9,5 @@
       vars:
         workstation_hostname: prime.maballou.com
         workstation_domain: maballou.com
-        workstation_dns: 192.168.0.252
+        workstation_dns: 192.168.0.251 192.168.0.252
 ...
