@@ -7,7 +7,7 @@ After=NetworkManager-wait-online.service
 What=//files.maballou.com/mike
 Where=/mnt/mike
 Type=cifs
-Options=rsize=130048,wsize=130048,username={{ cifs_username }},password={{ cifs_password }},uid=mike,gid=mike
+Options=vers=3.0,username={{ cifs_username }},password={{ cifs_password }},uid=mike,gid=mike
 
 [Install]
 WantedBy=multi-user.target
