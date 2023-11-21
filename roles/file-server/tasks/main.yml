@@ -29,7 +29,7 @@
   lvol:
     lv: nfs-home
     vg: data
-    size: 128G
+    size: 192G
     opts: --type raid0 --stripes 3
 
 - name: create cifs-home logical volume
@@ -43,7 +43,7 @@
   lvol:
     lv: cifs-share
     vg: data
-    size: 768G
+    size: 1024G
     opts: --type raid0 --stripes 3
 
 # Create filesystems
@@ -171,6 +171,30 @@
     permanent: yes
     state: enabled
     immediate: yes
+
+# update SELinux permissions
+- name: set selinux samba_export_all_rw
+  ansible.posix.seboolean:
+    name: samba_export_all_rw
+    state: yes
+    persistent: yes
+
+- name: set selinux fcontext of samba_share_t
+  community.general.sefcontext:
+    target: '{{ item.target }}(/.*)?'
+    setype: "{{ item.setype }}"
+    state: present
+  register: filecontext
+  with_items:
+  - { target: '/srv/cifs-home', setype: 'samba_share_t' }
+  - { target: '/srv/cifs-share', setype: 'samba_share_t' }
+
+- name: run restore context to reload selinux
+  shell: restorecon -R -v /var/lib/{{ item.target }}
+  when: filecontext.results[item.index]|changed
+  with_items:
+  - { index: 0, target: '/srv/cifs-home' }
+  - { index: 1, target: '/srv/cifs-share' }
 
 # restart services
 - name: restart nfs-server

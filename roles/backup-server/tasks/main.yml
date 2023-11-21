@@ -18,15 +18,14 @@
 - name: create LVM volume groups
   lvg:
     vg: data
-    pvs: /dev/sdb,/dev/sdc,/dev/sdd
+    pvs: /dev/nvme0n1p4,/dev/sda,/dev/sdb,/dev/sdc
 
 # Create LVM logical volumes
 - name: create backup logical volume
   lvol:
     lv: backup
     vg: data
-    size: 2T
-    opts: -i3 -I64
+    size: 100%VG
 
 # Create filesystems
 - name: create filesystem on backup
