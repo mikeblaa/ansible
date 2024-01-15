@@ -70,7 +70,6 @@
 - name: install pip packages
   pip:
     name:
-      - piecash
       - yfinance
 
 # Enable classic snap support for Visual Studio Code snap
