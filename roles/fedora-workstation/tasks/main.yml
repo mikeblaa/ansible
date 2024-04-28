@@ -52,6 +52,7 @@
     name:
       - brasero
       - cifs-utils
+      - drawing
       - easytag
       - gnucash
       - google-chrome-stable
@@ -108,6 +109,14 @@
     name: mike
     groups: libvirt
     append: yes
+
+# Create a directory for Podman since it doesn't like working out of an NFS
+# mounted home directory
+- name: Create a directory if it does not exist
+  ansible.builtin.file:
+    path: /opt/containers
+    state: directory
+    mode: '0777'
 
 # Miscellaneous OS settings
 - name: set selinux cups_execmem 
