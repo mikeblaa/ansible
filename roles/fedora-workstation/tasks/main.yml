@@ -7,18 +7,28 @@
     name: '{{ workstation_hostname }}'
     use: systemd
 
-- name: set local DNS server and search domain using systemd-resolved
-  lineinfile:
-    path: /etc/systemd/resolved.conf
-    state: present
-    regexp: "{{ item.regexp }}"
-    line: "{{ item.line }}"
-    backup: yes
-  with_items:
-    - { regexp: '^#?DNS=.*', line: 'DNS={{ workstation_dns }}' }
-    - { regexp: '^#?Domains=.*', line: 'Domains={{ workstation_domain }}' }
+# Set local DNS server and search domain using systemd-resolved
+- name: create /etc/systemd/resolved.conf.d/ directory if it does not exist
+  ansible.builtin.file:
+    path: /etc/systemd/resolved.conf.d/
+    state: directory
+    owner: root
+    group: root
+    mode: '0755'
+
+- name: create resolved.conf with content and restart systemd-resolved
+  ansible.builtin.copy:
+    content: |
+      [Resolve]
+      DNS={{ workstation_dns }}
+      Domains={{ workstation_domain }}
+    dest: /etc/systemd/resolved.conf.d/resolved.conf
+    owner: root
+    group: root
+    mode: '0644'
   notify: restart systemd-resolved
 
+# Enable third-party repositories
 - name: enable third-party repositories
   dnf:
     name: fedora-workstation-repositories
@@ -36,6 +46,7 @@
     - /etc/yum.repos.d/rpmfusion-nonfree-nvidia-driver.repo
     - /etc/yum.repos.d/rpmfusion-nonfree-steam.repo
 
+# Update and install packages
 - name: update packages
   dnf:
     name: '*'
