@@ -121,11 +121,17 @@
     groups: libvirt
     append: yes
 
-# Create a directory for Podman since it doesn't like working out of an NFS
-# mounted home directory
-- name: Create a directory if it does not exist
+# Create a directory for Gnome Boxes and Podman since they don't like 
+# working out of an NFS mounted home directory
+- name: create /opt/containers directory if it does not exist
   ansible.builtin.file:
     path: /opt/containers
+    state: directory
+    mode: '0777'
+
+- name: create /opt/gnome-boxes directory if it does not exist
+  ansible.builtin.file:
+    path: /opt/gnome-boxes
     state: directory
     mode: '0777'
 
