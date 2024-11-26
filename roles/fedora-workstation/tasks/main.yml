@@ -84,36 +84,23 @@
     name:
       - yfinance
 
-# Enable classic snap support for Visual Studio Code snap
-- name: enable classic snap support for Visual Studio Code snap
-  file:
-    src: /var/lib/snapd/snap
-    dest: /snap
-    owner: root
-    group: root
-    state: link
+# Install Visual Studio Code using flatpack
+- name: install Visual Studio Code flatpak
+  community.general.flatpak:
+    name:  com.visualstudio.code
+    state: present
 
-# Install Visual Studio Code using snap with classic confinement
-- name: install Visual Studio Code snap with option --classic
-  snap:
-    name: code
-    classic: yes
-  register: result
-  until: result is not failed
+# Install Slack using flatpak
+- name: install Slack flatpak
+  community.general.flatpak:
+    name:  com.slack.Slack
+    state: present
 
-# Install Slack using snap with classic confinement
-- name: install Slack snap
-  snap:
-    name: slack
-  register: result
-  until: result is not failed
-
-# Install Discord using snap with classic confinement
-- name: install Discord snap
-  snap:
-    name: discord
-  register: result
-  until: result is not failed
+# Install Discord using flatpak
+- name: install Discord flatpak
+  community.general.flatpak:
+    name:  com.discordapp.Discord
+    state: present
 
 - name: add existing user mike to group libvirt
   user:
