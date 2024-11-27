@@ -88,19 +88,16 @@
 - name: install Visual Studio Code flatpak
   community.general.flatpak:
     name:  com.visualstudio.code
-    state: present
 
 # Install Slack using flatpak
 - name: install Slack flatpak
   community.general.flatpak:
     name:  com.slack.Slack
-    state: present
 
 # Install Discord using flatpak
 - name: install Discord flatpak
   community.general.flatpak:
     name:  com.discordapp.Discord
-    state: present
 
 - name: add existing user mike to group libvirt
   user:
