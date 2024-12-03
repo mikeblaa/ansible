@@ -84,10 +84,19 @@
     name:
       - yfinance
 
-# Install Visual Studio Code using flatpack
-- name: install Visual Studio Code flatpak
-  community.general.flatpak:
-    name:  com.visualstudio.code
+# Add Visual Studio Yum Repository
+- name: Add repository
+  ansible.builtin.yum_repository:
+    name: Visual Studio Code
+    description: Visual Studio Code
+    baseurl: https://packages.microsoft.com/yumrepos/vscode
+    gpgkey: https://packages.microsoft.com/keys/microsoft.asc
+
+# Install Visual Studio Code
+- name: install Visual Studio Code
+  dnf:
+    name: code
+    state: present
 
 # Install Slack using flatpak
 - name: install Slack flatpak
