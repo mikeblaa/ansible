@@ -85,15 +85,15 @@
       - yfinance
 
 # Add Visual Studio Yum Repository
-- name: Add repository
+- name: add vscode repository
   ansible.builtin.yum_repository:
-    name: Visual Studio Code
+    name: vscode
     description: Visual Studio Code
     baseurl: https://packages.microsoft.com/yumrepos/vscode
     gpgkey: https://packages.microsoft.com/keys/microsoft.asc
 
 # Install Visual Studio Code
-- name: install Visual Studio Code
+- name: install vscode
   dnf:
     name: code
     state: present
