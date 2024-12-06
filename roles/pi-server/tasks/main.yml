@@ -76,16 +76,16 @@
     name: git
 
 # Checkout Docker repo
-- name: Checkout Docker repo
-  git:
-    repo: 'https://github.com/mikeblaa/docker.git'
-    dest: /opt/docker
+# - name: Checkout Docker repo
+#   git:
+#     repo: 'https://github.com/mikeblaa/docker.git'
+#     dest: /opt/docker
 
 # Create Pihole container with Podman
 - name: Create Pihole container with Podman
   containers.podman.podman_container:
     name: pihole
-    image: docker.io/pihole/pihole:2023.03.1
+    image: docker.io/pihole/pihole:2024.05.0
     state: present
     network:
       - "host"
