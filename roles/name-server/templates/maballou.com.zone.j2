@@ -12,6 +12,9 @@ $TTL 3D
 
 maballou.com.   IN      MX 10   mail.maballou.com.
 
+gateway         IN      A       192.168.1.1
+pi-2            IN      A       192.168.2.1
+pi-3            IN      A       192.168.3.1
 names-1         IN      A       192.168.0.1
 names-2         IN      A       192.168.0.2
 brother-2070n   IN      A       192.168.0.3
@@ -25,16 +28,15 @@ files-2         IN      A       192.168.0.11
 backups         IN      A       192.168.0.12
 idam-1          IN      A       192.168.0.13
 prime           IN      A       192.168.0.99
-pi-1            IN      A       192.168.0.251
-pi-2            IN      A       192.168.0.252
-gateway         IN      A       192.168.0.254
-k8s-master-1    IN      A       192.168.10.1
-k8s-master-2    IN      A       192.168.10.2
-k8s-master-3    IN      A       192.168.10.3
-k8s-node-1      IN      A       192.168.10.11
-k8s-node-2      IN      A       192.168.10.12
-k8s-node-3      IN      A       192.168.10.13
+k8s-api-server  IN      A       192.168.10.1
+k8s-master-1    IN      A       192.168.10.11
+k8s-master-2    IN      A       192.168.10.12
+k8s-master-3    IN      A       192.168.10.13
+k8s-node-1      IN      A       192.168.10.101
+k8s-node-2      IN      A       192.168.10.102
+k8s-node-3      IN      A       192.168.10.103
 pi              IN      CNAME   pi-1.maballou.com.
 esxi            IN      CNAME   esxi-1.maballou.com.
 files           IN      CNAME   files-1.maballou.com.
 idam            IN      CNAME   idam-1.maballou.com.
+proxmox         IN      CNAME   proxmod-1.maballou.com.

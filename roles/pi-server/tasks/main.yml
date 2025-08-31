@@ -75,31 +75,33 @@
   dnf:
     name: git
 
-# Checkout Docker repo
-# - name: Checkout Docker repo
-#   git:
-#     repo: 'https://github.com/mikeblaa/docker.git'
-#     dest: /opt/docker
-
 # Create Pihole container with Podman
 - name: Create Pihole container with Podman
   containers.podman.podman_container:
     name: pihole
-    image: docker.io/pihole/pihole:2024.05.0
+    image: docker.io/pihole/pihole:2025.08.0
     state: present
     network:
       - "host"
     volumes:
       - "etc-pihole:/etc/pihole:z"
-      - "/opt/docker/pihole/etc-dnsmasq.d:/etc/dnsmasq.d:z"
     env:
       TZ: "America/Chicago"
-      ServerIP: "{{ ansible_default_ipv4.address }}"
-      PIHOLE_DNS_: "1.1.1.1;1.0.0.1"
+      FTLCONF_dns_upstreams: '1.1.1.1;1.0.0.1'
+      FTLCONF_webserver_api_password: '{{ webserver_api_password }}'
+      FTLCONF_dhcp_start: '{{ fltconf_dhcp_start }}'
+      FTLCONF_dhcp_end: '{{ fltconf_dhcp_end }}'
+      FTLCONF_dhcp_router: '192.168.1.1'
+      FTLCONF_dns_domain: 'maballou.com'
+      FTLCONF_dns_revServers: 'true,192.168.0.0/16,192.168.0.1,maballou.com;true,192.168.0.0/16,192.168.0.2,maballou.com'
     cap_add:
       - "NET_ADMIN"
+      - "CAP_NET_BIND_SERVICE"
       - "CAP_NET_RAW"
+      - "CAP_NET_ADMIN"
       - "CAP_SYS_NICE"
+      - "CAP_CHOWN"
+      - "CAP_SYS_TIME"
       - "CAP_IPC_LOCK"
     dns:
       - "127.0.0.1"
