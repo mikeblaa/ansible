@@ -1,3 +1,0 @@
-Docker no route to host
-Containers could not talk to the Internet due to firewalld, fix:
-firewall-cmd --zone=public --add-masquerade --permanent

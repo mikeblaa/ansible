@@ -1,0 +1,118 @@
+---
+- name: update packages
+  dnf:
+    name: '*'
+    state: latest
+
+# 1. Prepare operating system
+
+# Disable SELinux
+- name: Disable SELinux
+  ansible.posix.selinux:
+    state: disabled
+
+# Disable firewalld
+- name: disable firewalld
+  ansible.builtin.systemd_service:
+    name: firewalld
+    state: stopped
+    enabled: false
+
+# Disable swap
+- name: Disable SWAP since kubernetes can't work with swap enabled (1/2)
+  shell: |
+    swapoff -a
+
+- name: Disable SWAP in fstab since kubernetes can't work with swap enabled (2/2)
+  replace:
+    path: /etc/fstab
+    regexp: '^(?!#)(.*/swap.*|.*swap.*)$'
+    replace: '# \1'
+
+# Update kernel modules
+- name: Add the dummy module and make sure it is loaded after reboots
+  community.general.modprobe:
+    name: br_netfilter
+    state: present
+    persistent: present
+
+# Update sysctl settings
+- name: Touch a file, using symbolic modes to set the permissions (equivalent to 0644)
+  ansible.builtin.file:
+    path: /etc/sysctl.d/k8s-sysctl.conf
+    state: touch
+    owner: root
+    group: root
+    seuser: system_u
+    serole: object_r
+    setype: system_conf_t
+    mode: '0644'
+
+- ansible.posix.sysctl:
+    name: net.ipv4.ip_forward
+    value: '1'
+    sysctl_file: /etc/sysctl.d/k8s-sysctl.conf
+    state: present
+    reload: true
+
+- ansible.posix.sysctl:
+    name: net.bridge.bridge-nf-call-iptables
+    value: '1'
+    sysctl_file: /etc/sysctl.d/k8s-sysctl.conf
+    state: present
+    reload: true
+
+# 2. Install CRI-O, Kubernetes, and Kubeadm
+
+# Add Kubernetes repository
+- name: Add repository
+  ansible.builtin.yum_repository:
+    name: kubernetes
+    description: Kubernetes
+    baseurl: https://pkgs.k8s.io/core:/stable:/{{ KUBERNETES_VERSION }}/rpm/
+    gpgkey: https://pkgs.k8s.io/core:/stable:/{{ KUBERNETES_VERSION }}/rpm/repodata/repomd.xml.key
+    gpgcheck: true
+  vars:
+    KUBERNETES_VERSION: "v1.34"
+
+# Add CRI-O repository
+- name: Add repository
+  ansible.builtin.yum_repository:
+    name: cri-o
+    description: CRI-O
+    baseurl: https://download.opensuse.org/repositories/isv:/cri-o:/stable:/{{ CRIO_VERSION }}/rpm/
+    gpgkey: https://download.opensuse.org/repositories/isv:/cri-o:/stable:/{{ CRIO_VERSION }}/rpm/repodata/repomd.xml.key
+    gpgcheck: true
+  vars:
+    CRIO_VERSION: "v1.34"
+
+- name: install dnf packages
+  dnf:
+    name:
+      - container-selinux
+      - cri-o
+      - kubelet
+      - kubeadm
+      - kubectl
+    state: latest
+
+# 3. Start CRI-O and Kubelet services
+- name: start and enable crio
+  ansible.builtin.systemd_service:
+    name: crio.service
+    state: started
+    enabled: true
+
+- name: start and enable crio
+  ansible.builtin.systemd_service:
+    name: kubelet.service
+    state: started
+    enabled: true
+
+# 4. Run kubeadm init
+
+
+# 5. Install Flannel CNI
+
+
+...
