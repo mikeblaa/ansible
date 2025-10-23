@@ -1,0 +1,129 @@
+# Plaintext
+Docker no route to host
+Containers could not talk to the Internet due to firewalld, fix:
+firewall-cmd --zone=public --add-masquerade --permanent
+
+Installing kubernetes using kubeadm
+
+1. Prepare operating system
+2. Install CRI-O, Kubernetes, and Kubeadm
+3. Start CRI-O and Kubelet services
+4. Run kubeadm init
+5. Install Flannel CNI
+
+
+### 1. Prepare operating system
+
+swapoff -a
+
+modprobe br_netfilter
+
+systemctl disable --now firewalld.service
+
+# Set SELinux in permissive mode (effectively disabling it)
+sudo setenforce 0
+sudo sed -i 's/^SELINUX=enforcing$/SELINUX=permissive/' /etc/selinux/config
+
+
+# sysctl params required by setup, params persist across reboots
+cat <<EOF | sudo tee /etc/sysctl.d/k8s-sysctl.conf
+net.ipv4.ip_forward = 1
+net.bridge.bridge-nf-call-iptables = 1
+EOF
+
+cat <<EOF | sudo tee /etc/modules-load.d/k8s-modules.conf
+br_netfilter
+EOF
+
+# Apply sysctl params without reboot
+sudo sysctl --system
+
+
+### 2. Install CRI-O, Kubernetes, and Kubeadm
+
+https://kubernetes.io/docs/setup/production-environment/container-runtimes/
+https://github.com/cri-o/packaging/blob/main/README.md#usage
+https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/
+
+
+
+### 3. Start CRI-O and Kubelet services
+
+https://github.com/cri-o/packaging/blob/main/README.md#usage
+
+
+
+### 4. Run kubeadm init
+
+https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/high-availability/
+
+
+
+### 5. Install Flannel CNI
+
+
+
+
+Intsall CRI-O container runtime
+https://kubernetes.io/docs/setup/production-environment/container-runtimes/
+
+
+Before doing any kubeadm, need to set up API Server
+
+https://github.com/kubernetes/kubeadm/blob/main/docs/ha-considerations.md#options-for-software-load-balancing
+
+
+
+
+
+
+
+https://github.com/cri-o/packaging/blob/main/README.md#usage
+
+KUBERNETES_VERSION=v1.32
+CRIO_VERSION=v1.32
+
+cat <<EOF | tee /etc/yum.repos.d/kubernetes.repo
+[kubernetes]
+name=Kubernetes
+baseurl=https://pkgs.k8s.io/core:/stable:/$KUBERNETES_VERSION/rpm/
+enabled=1
+gpgcheck=1
+gpgkey=https://pkgs.k8s.io/core:/stable:/$KUBERNETES_VERSION/rpm/repodata/repomd.xml.key
+EOF
+
+cat <<EOF | tee /etc/yum.repos.d/cri-o.repo
+[cri-o]
+name=CRI-O
+baseurl=https://pkgs.k8s.io/addons:/cri-o:/stable:/$CRIO_VERSION/rpm/
+enabled=1
+gpgcheck=1
+gpgkey=https://pkgs.k8s.io/addons:/cri-o:/stable:/$CRIO_VERSION/rpm/repodata/repomd.xml.key
+EOF
+
+dnf install -y container-selinux
+
+dnf install -y cri-o kubelet kubeadm kubectl
+
+Configure a Container Network Interface (CNI) plugin
+
+kubectl apply -f https://github.com/coreos/flannel/raw/master/Documentation/kube-flannel.yml
+
+
+https://docs.cilium.io/en/stable/installation/k8s-install-kubeadm/
+
+https://helm.sh/docs/intro/install/
+
+helm repo add cilium https://helm.cilium.io/
+
+helm install cilium cilium/cilium --version 1.16.5 --namespace kube-system
+
+
+42  dnf install -y cri-o kubelet kubeadm kubectl
+43  systemctl enable --now crio.service 
+44  systemctl enable --now kubelet.service 
+45  kubeadm init --pod-network-cidr=10.244.0.0/16 --control-plane-endpoint k8s-api-server.maballou.com:6443 --upload-certs
+
+kubectl apply -f https://github.com/coreos/flannel/raw/master/Documentation/kube-flannel.yml
+
+kubectl get pods --all-namespaces

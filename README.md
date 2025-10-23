@@ -16,6 +16,8 @@ ansible-playbook -i inventory file-server-playbook.yml -u admin --ask-pass --ask
 ansible-playbook -i inventory name-server-playbook.yml -u admin --ask-pass --ask-vault-pass
 
 ansible-playbook -i inventory pi-server-playbook.yml -u admin --ask-pass --ask-vault-pass
+
+ansible-playbook -i inventory k8s-server-playbook.yml -u admin --ask-pass --ask-vault-pass
 ```
 
 ## Manual

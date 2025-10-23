@@ -1,0 +1,9 @@
+---
+- name: configure kubernetes servers
+  hosts: k8sservers
+  become: yes
+  roles:
+    - common
+    - centos-server
+    - k8s-server
+...
