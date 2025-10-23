@@ -1,8 +1,9 @@
 ---
-- name: install cockpit
+- name: install centos packages
   dnf:
     name:
       - cockpit
+      - open-vm-tools
 
 - name: enabled cockpit
   systemd:
