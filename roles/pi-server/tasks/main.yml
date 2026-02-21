@@ -13,6 +13,13 @@
     name: '*'
     state: latest
 
+# Install Python libraries
+- name: Install Python libraries
+  dnf:
+    name:
+      - python3-pip
+      - python3-setuptools
+
 # Install Podman
 - name: Install Podman
   dnf:
@@ -79,7 +86,7 @@
 - name: Create Pihole container with Podman
   containers.podman.podman_container:
     name: pihole
-    image: docker.io/pihole/pihole:2025.08.0
+    image: docker.io/pihole/pihole:2025.11.1
     state: present
     network:
       - "host"
