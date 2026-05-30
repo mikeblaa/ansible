@@ -7,26 +7,10 @@
     name: '{{ workstation_hostname }}'
     use: systemd
 
-# Set local DNS server and search domain using systemd-resolved
-- name: create /etc/systemd/resolved.conf.d/ directory if it does not exist
-  ansible.builtin.file:
-    path: /etc/systemd/resolved.conf.d/
-    state: directory
-    owner: root
-    group: root
-    mode: '0755'
-
-- name: create resolved.conf with content and restart systemd-resolved
-  ansible.builtin.copy:
-    content: |
-      [Resolve]
-      DNS={{ workstation_dns }}
-      Domains={{ workstation_domain }}
-    dest: /etc/systemd/resolved.conf.d/resolved.conf
-    owner: root
-    group: root
-    mode: '0644'
-  notify: restart systemd-resolved
+- name: check target host interface name
+  ansible.builtin.debug:
+    msg: "{{ ansible_default_ipv4.interface }}"
+  register: interface_name
 
 # Enable third-party repositories
 - name: enable third-party repositories
