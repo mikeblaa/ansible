@@ -9,7 +9,7 @@
 
 - name: check target host interface name
   ansible.builtin.debug:
-    msg: "{{ ansible_default_ipv4.interface }}"
+    msg: "{{ ansible_facts['default_ipv4']['interface'] }}"
   register: interface_name
 
 # Enable third-party repositories
