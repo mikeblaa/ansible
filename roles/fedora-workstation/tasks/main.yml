@@ -28,6 +28,8 @@
     conn_name: "{{ active_conn_name }}"
     ifname: "{{ ansible_facts['default_ipv4']['interface'] }}"
     method4: manual
+    ip4: "{{ ansible_facts['default_ipv4']['address'] }}/{{ ansible_facts['default_ipv4']['prefix'] }}"
+    gw4: "{{ ansible_facts['default_ipv4']['gateway'] }}"
     dns4: "{{ workstation_dns }}"
     dns4_search: "{{ workstation_domain }}"
     state: present
