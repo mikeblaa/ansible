@@ -7,10 +7,31 @@
     name: '{{ workstation_hostname }}'
     use: systemd
 
+- name: Get active connection name for the interface
+  ansible.builtin.command: >
+    nmcli -g GENERAL.CONNECTION device show {{ ansible_facts['default_ipv4']['interface'] }}
+  register: nmcli_output
+  changed_when: false
+
+- name: Save connection name as a fact
+  ansible.builtin.set_fact:
+    active_conn_name: "{{ nmcli_output.stdout | trim }}"
+
 - name: check target host interface name
   ansible.builtin.debug:
-    msg: "{{ ansible_facts['default_ipv4']['interface'] }}"
+    msg: "{{ active_conn_name }}"
   register: interface_name
+
+- name: Configure static connection using NetworkManager
+  community.general.nmcli:
+    type: ethernet
+    conn_name: "{{ active_conn_name }}"
+    ifname: "{{ ansible_facts['default_ipv4']['interface'] }}"
+    method4: manual
+    dns4: "{{ workstation_dns }}"
+    dns4_search: "{{ workstation_domain }}"
+    state: present
+    autoconnect: true
 
 # Enable third-party repositories
 - name: enable third-party repositories
