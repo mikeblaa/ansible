@@ -7,9 +7,10 @@
     name: '{{ workstation_hostname }}'
     use: systemd
 
+# Set the workstation IPv4 address, gateway, and DNS servers using NetworkManager
 - name: get active connection name for the interface
   ansible.builtin.command: >
-    nmcli -g GENERAL.CONNECTION device show {{ ansible_facts['default_ipv4']['interface'] }}
+    nmcli -g general.connection device show {{ ansible_facts['default_ipv4']['interface'] }}
   register: nmcli_output
   changed_when: false
 
@@ -23,8 +24,8 @@
     conn_name: "{{ active_conn_name }}"
     ifname: "{{ ansible_facts['default_ipv4']['interface'] }}"
     method4: manual
-    ip4: "{{ ansible_facts['default_ipv4']['address'] }}/{{ ansible_facts['default_ipv4']['prefix'] }}"
-    gw4: "{{ ansible_facts['default_ipv4']['gateway'] }}"
+    ip4: "{{ workstation_ipv4_address }}/{{ workstation_ipv4_prefix }}"
+    gw4: "{{ workstation_ipv4_gateway }}"
     dns4: "{{ workstation_dns }}"
     dns4_search: "{{ workstation_domain }}"
     state: present
