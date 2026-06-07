@@ -31,6 +31,7 @@
     state: present
     autoconnect: true
     conn_reload: true
+  when: ansible_virtualization_role == "host"
 
 # Enable third-party repositories
 - name: enable third-party repositories
