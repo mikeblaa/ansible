@@ -80,7 +80,6 @@
       - python3-pip
       - simple-scan
       - snapd
-      - steam
       - vim
     state: latest
 
@@ -103,6 +102,11 @@
     name: code
     state: present
 
+# Install Freedesktop Platform using flatpak
+- name: install Freedesktop Platform flatpak
+  community.general.flatpak:
+    name:  org.freedesktop.Platform
+
 # Install Slack using flatpak
 - name: install Slack flatpak
   community.general.flatpak:
@@ -112,6 +116,11 @@
 - name: install Discord flatpak
   community.general.flatpak:
     name:  com.discordapp.Discord
+
+# Install Steam using flatpak
+- name: install Steam flatpak
+  community.general.flatpak:
+    name:  com.valvesoftware.Steam
 
 - name: add existing user mike to group libvirt
   user:
