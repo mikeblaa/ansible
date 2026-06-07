@@ -31,7 +31,7 @@
     state: present
     autoconnect: true
     conn_reload: true
-  when: ansible_virtualization_role == "host"
+  when: ansible_facts['virtualization_role'] == "host"
 
 # Enable third-party repositories
 - name: enable third-party repositories
@@ -105,7 +105,7 @@
 # Install Freedesktop Platform using flatpak
 - name: install Freedesktop Platform flatpak
   community.general.flatpak:
-    name:  org.freedesktop.Platform
+    name:  org.freedesktop.Platform//25.08
 
 # Install Slack using flatpak
 - name: install Slack flatpak
